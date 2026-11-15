@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Zeitreise Cádiz</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: Lesedokument für eine Person. Oben Zeitstrahl und Umschalter für beide Altersstufen, darunter ein Block je Volk mit gleichem Raster. */
+:root {
+  --bg: #EDF2F4;
+  --surface: #FFFFFF;
+  --ink: #0C2233;
+  --muted: #4E6376;
+  --line: #CBD8E0;
+  --tint: #DCEAF0;
+  --sea: #0F6E8C;
+  --on-sea: #FFFFFF;
+  --sun: #F0B02E;
+  --on-sun: #2A1D00;
+  --henry: #B8561A;
+  --nick: #0F6E8C;
+  --nogo: #F3C9C0;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1B27; --surface: #102636; --ink: #E7F0F5; --muted: #9DB3C2; --line: #234055;
+    --tint: #16303F; --sea: #4FB3D3; --on-sea: #06202D; --sun: #F2BC4B; --on-sun: #2A1D00;
+    --henry: #F0A06A; --nick: #6CC3DF;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1B27; --surface: #102636; --ink: #E7F0F5; --muted: #9DB3C2; --line: #234055;
+  --tint: #16303F; --sea: #4FB3D3; --on-sea: #06202D; --sun: #F2BC4B; --on-sun: #2A1D00;
+  --henry: #F0A06A; --nick: #6CC3DF;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.55; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.12; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: var(--sea); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+
+.wrap {
+  max-width: 720px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+.stack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+.hero { padding-block: 28px 8px; display: flex; flex-direction: column; gap: 8px; }
+.eyebrow { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--sea); }
+.hero h1 { font-size: clamp(2.1rem, 8.5vw, 3rem); font-weight: 800; }
+.hero p { color: var(--muted); max-width: 52ch; }
+
+.modebar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: var(--tint); border-radius: 12px; padding: 4px; }
+.seg button { border: 0; background: transparent; border-radius: 9px; min-height: 44px; font-weight: 700; cursor: pointer; padding: 6px 8px; }
+.seg button[aria-pressed="true"] { background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.18); }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.card h2 { font-size: 1.5rem; font-weight: 800; }
+.sec-t { font-size: 1.35rem; font-weight: 800; margin-top: 12px; }
+
+.era { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.era a { display: grid; grid-template-columns: 7.5rem 1fr; gap: 4px 12px; text-decoration: none; color: var(--ink); padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; align-items: baseline; }
+.era b { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; }
+.era .y { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; grid-column: 1; }
+.era .s { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+@media (max-width: 420px) { .era a { grid-template-columns: 1fr; } .era .s { grid-column: 1; grid-row: auto; } }
+
+.when { align-self: flex-start; background: var(--sun); color: var(--on-sun); border-radius: 999px; padding: 3px 12px; font-weight: 700; font-size: .92rem; }
+.row { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
+.lab { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--muted); }
+.t { display: flex; gap: 10px; align-items: baseline; min-width: 0; }
+.t p { flex: 1; min-width: 0; }
+.who { flex: none; width: 3.9rem; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.who { overflow-wrap: anywhere; }
+.names { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 6px; }
+.nm { display: flex; flex-direction: column; gap: 4px; font-size: .9rem; color: var(--muted); min-width: 0; }
+.inp { background: var(--surface); border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 48px; min-width: 0; width: 100%; color: var(--ink); }
+.t.h .who { color: var(--henry); }
+.t.n .who { color: var(--nick); }
+#app[data-mode="h"] .t.n, #app[data-mode="n"] .t.h { display: none; }
+#app[data-mode="h"] .who, #app[data-mode="n"] .who { display: none; }
+
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: .95rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 700; }
+
+.ideas { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.note { color: var(--muted); font-size: .92rem; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --nogo: #5A2A24; } }
+:root[data-theme="dark"] { --nogo: #5A2A24; }
+.pols { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+.polfig { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; text-align: center; }
+.polfig figcaption { display: flex; flex-direction: column; font-size: .9rem; }
+.polfig figcaption span { color: var(--muted); }
+.pol { width: 100%; max-width: 130px; height: auto; }
+.pol circle { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.pol .ng { fill: var(--nogo); stroke: none; }
+.pol line { stroke: var(--ink); stroke-width: 1.5; }
+.pol polygon { fill: var(--ink); }
+.pol text { fill: var(--ink); font-size: 11px; font-family: var(--font-body); }
+.back { display: inline-block; margin-top: 4px; font-weight: 700; }
+</style>
+
+</head>
+<body>
+<div id="app" class="wrap" data-mode="both">
+  <header class="hero">
+    <div class="eyebrow">Vorbereitung Cádiz-Rallye</div>
+    <h1>Zeitreise Cádiz</h1>
+    <p>Wer hat die Stadt in 3000 Jahren besetzt, wie haben die Menschen dort gelebt und was konnten sie besonders gut? Jeder Abschnitt hat eine Version für das jüngere Kind (7 Jahre) und das ältere Kind (10 Jahre). Die Namen sind freiwillig.</p>
+    <div class="names"><label class="nm"><span>Name, 10 Jahre</span><input class="inp" id="name-n" type="text" maxlength="20" autocomplete="off" placeholder="Kind 1"></label><label class="nm"><span>Name, 7 Jahre</span><input class="inp" id="name-h" type="text" maxlength="20" autocomplete="off" placeholder="Kind 2"></label></div>
+  </header>
+  <div class="modebar"><div class="seg" role="group" aria-label="Version wählen">
+    <button type="button" data-mode="both" aria-pressed="true">Beide</button>
+    <button type="button" data-mode="h" aria-pressed="false"><span data-name="h"></span> (7)</button>
+    <button type="button" data-mode="n" aria-pressed="false"><span data-name="n"></span> (10)</button>
+  </div></div>
+  <div class="stack" id="content"></div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var ROWS = [
+    ["wo", "Woher und wann"],
+    ["stadt", "Wohnen und Stadtidee"],
+    ["wasser", "Wasser und Bäder"],
+    ["kleidung", "Kleidung"],
+    ["schiffe", "Schiffe"],
+    ["segeln", "Segeln und Rudern"],
+    ["alter", "Wie alt wurden sie?"],
+    ["koennen", "Was konnten sie besonders gut?"],
+    ["cadiz", "Spuren in Cádiz"]
+  ];
+
+  var FOLK = [
+    { id: "f-phonizier", name: "Phönizier", when: "Gadir ab etwa dem 9. bis 8. Jh. v. Chr.", short: "Seefahrer und Händler aus dem Libanon", year: "ab ca. 1100 v. Chr. (Überlieferung)",
+      wo: [
+        "Sie kamen aus dem heutigen Libanon, ganz im Osten des Mittelmeers. Mit ihren Schiffen fuhren sie bis nach Cádiz, das sind weit über 3000 Kilometer. Die Stadt hieß damals Gadir.",
+        "Heimat waren Stadtstaaten an der Küste des heutigen Libanon: Tyros, Sidon, Byblos. Von dort gründeten sie Handelsplätze rund um das Mittelmeer, etwa Karthago, Stationen auf Sizilien und Sardinien und Gadir. Die antike Überlieferung nennt für Gadir etwa 1100 v. Chr. Die ältesten Funde in Cádiz sind eher aus dem 9. bis 8. Jahrhundert."
+      ],
+      stadt: [
+        "Ihre Städte lagen auf Inseln oder kleinen Halbinseln am Meer, mit Mauern drumherum. So konnte man sie gut verteidigen. Die Häuser standen dicht an dicht.",
+        "Sie wählten Orte mit sicherem Hafen, die man gut verteidigen konnte, meist Inseln oder Landzungen. Gadir lag auf kleinen Inseln, die später zusammenwuchsen. Auf einer stand ein berühmter Tempel für den Gott Melqart. Die Wohnviertel waren eng bebaut, der Hafen war das Herz der Stadt."
+      ],
+      wasser: [
+        "Auf kleinen Inseln ist Wasser knapp. Darum sammelte man Regenwasser in Zisternen und grub Brunnen.",
+        "Brunnen und Zisternen für Regenwasser waren lebenswichtig. Große öffentliche Bäder sind von den Phöniziern nicht bekannt."
+      ],
+      kleidung: [
+        "Lange Hemden aus Wolle oder Leinen und Umhänge. Reiche trugen Purpur, die teuerste Farbe der Welt. Man gewann sie aus Meeresschnecken.",
+        "Lange Gewänder aus Wolle und Leinen, dazu Umhänge und auf Bildern der Nachbarvölker oft Mützen. Purpurfarbe aus Meeresschnecken war extrem teuer: Für ein einziges Gewand brauchte man tausende Schnecken. Der Name „Phönizier“ geht auf ein griechisches Wort für „purpurrot“ zurück."
+      ],
+      alter: [
+        "Viele Kinder wurden nicht alt, weil es keine Medizin wie heute gab. Wer groß wurde, konnte aber oft 50 oder 60 Jahre alt werden.",
+        "Genaue Zahlen gibt es kaum. Im Durchschnitt lag die Lebenserwartung bei der Geburt bei etwa 30 bis 35 Jahren, weil so viele Kinder früh starben. Wer erwachsen wurde, erreichte oft 50 bis 60. Das gilt ähnlich für alle Völker in diesem Überblick."
+      ],
+      koennen: [
+        "Schiffe bauen, weit fahren und handeln. Und sie hatten eine Schrift mit nur 22 Zeichen, aus der später unsere Buchstaben wurden.",
+        "Schiffsbau, Navigation nach den Sternen (die Griechen nannten den Polarstern den „phönizischen Stern“), Handel mit Zinn, Silber, Purpur, Glas und Holz. Ihr Alphabet hatte 22 Zeichen, nur Konsonanten, geschrieben von rechts nach links. Die Zahlen bestanden aus Strichen. Reich wurden sie auch durch das Silber aus Südspanien."
+      ],
+      cadiz: [
+        "Sie haben Cádiz gegründet. Im Museum stehen zwei steinerne Särge in Menschenform, einer für einen Mann und einer für eine Frau.",
+        "Gadir selbst, der Tempel des Melqart (sein genauer Ort ist umstritten) und im Museo de Cádiz die beiden phönizischen Sarkophage in Menschengestalt aus dem 5. Jh. v. Chr."
+      ] },
+
+    { id: "f-karthager", name: "Karthager", when: "etwa 6. Jh. bis 206 v. Chr.", short: "Großmacht aus Nordafrika mit Flotte und Elefanten", year: "ca. 500 bis 206 v. Chr.",
+      wo: [
+        "Karthago lag in Nordafrika, dort wo heute Tunesien ist. Es war eine Stadt, die Phönizier gegründet hatten. Später beschützte Karthago auch Cádiz.",
+        "Karthago bei Tunis war eine phönizische Gründung und wurde selbst zur Großmacht. Der Sage nach gründete Königin Dido die Stadt (814 v. Chr.). Gadir geriet zunehmend unter karthagischen Einfluss. 237 v. Chr. landete Hamilkar Barkas, Hannibals Vater, in Südspanien, wegen der Silberminen und der Söldner."
+      ],
+      stadt: [
+        "Karthago hatte einen runden Hafen nur für Kriegsschiffe und hohe Mauern. Die Häuser hatten mehrere Stockwerke.",
+        "Es gab einen Handelshafen und einen kreisrunden Kriegshafen für sehr viele Schiffe, dazu eine gewaltige Stadtmauer. Antike Autoren erzählen von mehrstöckigen Häusern in engen Straßen. Auf dem Land lagen große Güter mit Oliven, Wein und Getreide."
+      ],
+      wasser: [
+        "Im Sommer regnet es dort kaum. Darum hatten die Häuser Zisternen, in denen Regenwasser gespeichert wurde.",
+        "Zisternen für Regenwasser sind typisch. Öffentliche Bäder sind von den Karthagern kaum bekannt. Die berühmten großen Bäder und der lange Aquädukt von Karthago stammen erst aus römischer Zeit."
+      ],
+      kleidung: [
+        "Ähnlich wie bei den Phöniziern: lange Gewänder, Umhänge und viel Schmuck.",
+        "Wie bei den Phöniziern: Tuniken, Umhänge und viel Schmuck wie Ohrringe und Amulette. Die Soldaten trugen Helme, Schilde und Panzer. Die Söldner kleideten sich oft nach ihrer eigenen Heimat."
+      ],
+      alter: [
+        "Wie bei allen Menschen damals: Viele Kinder starben früh, Erwachsene konnten aber alt werden. Hannibal wurde etwa 64.",
+        "Wie oben: im Durchschnitt wenig, wer erwachsen wurde, oft 50 bis 60. Der Feldherr Hannibal (247 bis 183 v. Chr.) wurde etwa 64 Jahre alt."
+      ],
+      koennen: [
+        "Sie waren gute Händler mit vielen Schiffen. Der berühmte Feldherr Hannibal zog mit Elefanten über die Alpen.",
+        "Seehandel von Spanien bis Afrika, Silber aus Spanien, Söldnerheere und Kriegselefanten. Ein Buch des Karthagers Mago über Landwirtschaft war so gut, dass die Römer es nach dem Fall Karthagos ins Lateinische übersetzen ließen. 218 v. Chr. zog Hannibal mit Elefanten über die Alpen."
+      ],
+      cadiz: [
+        "Auf alten Münzen aus Cádiz sieht man einen Thunfisch. Der Fisch war sehr wichtig.",
+        "Münzen aus Gadir zeigen Thunfische und den Gott Melqart. Thunfisch wurde gefangen, gesalzen und weit verkauft. Die Tradition des Thunfischfangs (almadraba) gibt es an dieser Küste bis heute."
+      ] },
+
+    { id: "f-romer", name: "Römer", when: "206 v. Chr. bis 5. Jh. n. Chr.", short: "Bauherren, Juristen und Fischsoße aus Gades", year: "206 v. Chr. bis ca. 5. Jh. n. Chr.",
+      wo: [
+        "Rom liegt in Italien. Die Römer eroberten fast das ganze Mittelmeer. Cádiz hieß bei ihnen Gades.",
+        "Nach dem Sieg über Karthago in Spanien wurde Gades römisch (206 v. Chr.). 49 v. Chr. bekam die Stadt römisches Bürgerrecht. Lucius Cornelius Balbus aus Gades wurde sogar Konsul in Rom, als einer der ersten Männer, die nicht in Rom oder Italien geboren waren."
+      ],
+      stadt: [
+        "Römer bauten ihre Städte nach Plan: gerade Straßen wie ein Schachbrett, in der Mitte ein Marktplatz, dazu ein Theater und Tempel.",
+        "Typisch sind gerade Straßen, die sich im rechten Winkel kreuzen, und in der Mitte das Forum mit Tempel, Markt und Gericht. Dazu kamen Theater, Hafen und Gräberstraßen vor der Stadt. In Gades baute man ein großes Theater, eines der größten Spaniens aus dieser Zeit."
+      ],
+      wasser: [
+        "Die Römer liebten Wasser. Sie bauten lange Wasserleitungen, die Aquädukte, und öffentliche Bäder. Dort traf man sich und redete.",
+        "Wasser war ihr Markenzeichen: Aquädukte brachten Quellwasser über viele Kilometer, in der Stadt gab es Brunnen, Zisternen und Thermen. Das Bad war Treffpunkt, Sportplatz und Ort für Geschäfte. Für Gades wird eine Leitung von Quellen bei Jerez beschrieben, die mehr als 70 Kilometer lang war."
+      ],
+      kleidung: [
+        "Männer trugen eine Tunika und, wenn sie Bürger waren, eine Toga, ein großes weißes Tuch. Kinder trugen eine kleine Kapsel an einer Kette als Glücksbringer.",
+        "Grundkleid war die Tunika. Römische Bürger trugen darüber die Toga, ein großes Wolltuch. Freie Jungen trugen eine Toga mit Purpurstreifen und die bulla, ein Amulett, das sie beim Erwachsenwerden ablegten. Frauen trugen Stola und Palla, dazu Sandalen."
+      ],
+      alter: [
+        "Auch bei den Römern starben viele Kinder früh. Jungen gingen mit etwa 7 Jahren zur Schule, also in deinem Alter.",
+        "Wie oben im Durchschnitt wenig, wer erwachsen wurde oft 50 bis 60. Mit etwa 7 Jahren begannen Kinder, deren Eltern die Schule bezahlen konnten, mit Lesen, Schreiben und Rechnen am Rechenbrett."
+      ],
+      koennen: [
+        "Bauen! Straßen, Brücken und Wasserleitungen. Und Garum, eine salzige Fischsoße, die in Gades gemacht wurde und in ganz Rom beliebt war.",
+        "Ingenieure und Bauherren (Straßen, Brücken, Aquädukte, Beton), Juristen und Verwalter. Gades wurde reich durch Fischfang und Fischverarbeitung, vor allem Salzfisch und die Würzsoße Garum. Auch die römischen Zahlen kennt ihr: I, V, X, L, C, D, M."
+      ],
+      cadiz: [
+        "Das Römertheater kannst du in Cádiz besuchen. Außerdem gibt es Reste von Fischfabriken.",
+        "Teatro Romano (1. Jh. v. Chr.), Reste der Fischsalzereien, Gräber vor der Stadt und der Name Gades."
+      ] },
+
+    { id: "f-westgoten", name: "Westgoten", when: "5. bis 7. Jh. n. Chr.", short: "Reiterkrieger und Goldschmiede, Hauptstadt Toledo", year: "5. bis 7. Jh. n. Chr.",
+      wo: [
+        "Die Goten waren ein Volk aus dem Norden und Osten Europas. Als das Römische Reich zerfiel, kamen sie nach Spanien. Ihre Hauptstadt war Toledo.",
+        "Ein germanisches Volk. Nach der Plünderung Roms 410 zogen sie zunächst nach Südfrankreich und ab Mitte des 5. Jh. nach Spanien. Hauptstadt wurde Toledo. Der Süden stand im 6. Jh. zeitweise unter byzantinischem Einfluss, bis die Westgoten ihn im 7. Jh. zurückholten."
+      ],
+      stadt: [
+        "Die Goten wohnten oft in den alten römischen Städten weiter und bauten wenig Neues. Cádiz war damals klein und unwichtig.",
+        "Sie übernahmen römische Städte, ohne sie neu zu planen. Bischöfe und Kirchen wurden wichtiger als Forum und Theater. Viele römische Gebäude verfielen oder wurden als Steinbruch genutzt. Cádiz verlor an Bedeutung."
+      ],
+      wasser: [
+        "Die alten römischen Wasserleitungen und Bäder wurden oft nicht mehr gepflegt.",
+        "Viele Aquädukte und Thermen verfielen. Je nach Ort ging es sehr unterschiedlich weiter. Brunnen und Zisternen blieben im Alltag wichtig."
+      ],
+      kleidung: [
+        "Hosen, Hemden und Mäntel. Die Mäntel hielt eine Spange zusammen, die Fibel. Sie war bei Reichen oft aus Gold.",
+        "Männer trugen Hosen, Tunika und Umhang, Frauen lange Gewänder mit Fibeln und Gürtelschnallen. Reicher Schmuck war oft aus Gold, mit roten Granaten verziert."
+      ],
+      alter: [
+        "Wie bei den anderen: Viele Kinder starben früh, Erwachsene wurden oft 50 oder 60.",
+        "Wie oben. Es gibt keine genauen Zahlen. Krieg und Krankheiten bestimmten das Leben."
+      ],
+      koennen: [
+        "Sie waren gute Reiter, Kämpfer und Goldschmiede.",
+        "Reiterkrieger, hervorragende Goldschmiede (die Weihekronen vom Schatz von Guarrazar), Gesetzgeber und Gelehrte wie Isidor von Sevilla, der eine große Enzyklopädie schrieb."
+      ],
+      cadiz: [
+        "In Cádiz sind aus dieser Zeit kaum Spuren geblieben.",
+        "Cádiz selbst hat aus dieser Zeit wenig hinterlassen. Das ist eine Lücke in der Stadtgeschichte."
+      ] },
+
+    { id: "f-mauren", name: "Mauren", when: "711 bis 1262", short: "Al-Andalus: Wissenschaft, Wasser, Gärten", year: "711 bis 1262",
+      wo: [
+        "Die Mauren kamen aus Nordafrika, nur 14 Kilometer übers Meer bei Gibraltar. Ihr Land hieß Al-Andalus. Davon kommt das Wort Andalusien. Cádiz hieß bei ihnen Qadis.",
+        "711 setzte Tariq ibn Ziyad bei Gibraltar über (der Name kommt von Dschabal Tariq, „Berg des Tariq“). In wenigen Jahren stand fast ganz Spanien unter muslimischer Herrschaft. Cádiz, arabisch Qādis, war ein Hafen am Rand, das Zentrum war Córdoba (Kalifat ab 929). 1262 eroberte König Alfons X. die Stadt zurück."
+      ],
+      stadt: [
+        "Arabische Städte haben enge, schattige Gassen, eine Moschee, einen Markt und Häuser mit einem Innenhof, dem Patio, mit einem Brunnen in der Mitte.",
+        "Die Medina hat verwinkelte Gassen, die Schatten spenden. In der Mitte stehen Moschee und Markt. Wohnhäuser sind nach innen gerichtet, mit Patio, Brunnen und oft einem Orangenbaum. Eine Burg (Alcazaba) schützte die Stadt."
+      ],
+      wasser: [
+        "Wasser war wichtig und fast heilig. Es gab öffentliche Bäder, die Hammams. Man badete zusammen, aber Männer und Frauen zu verschiedenen Zeiten. In den Gärten plätscherten Brunnen.",
+        "Wasser diente der Reinigung vor dem Gebet. Hammams waren Dampfbäder mit warmen, heißen und kalten Räumen und zugleich Treffpunkt, Männer und Frauen getrennt oder zu verschiedenen Zeiten. Kanäle (acequias) und Schöpfräder (norias) brachten Wasser auf die Felder. Viele spanische Wörter dafür sind arabisch: aljibe (Zisterne), acequia, noria."
+      ],
+      kleidung: [
+        "Lange, weite Gewänder, Kopftücher und Turbane. Das schützte vor Sonne und Staub.",
+        "Lange Gewänder, Turban oder Kopftuch und der Burnus, ein Kapuzenmantel. Frauen trugen Gewänder mit Kopftuch oder Schleier. Stoffe waren Baumwolle, Leinen und Seide, mit Farben und Mustern."
+      ],
+      alter: [
+        "Wie bei allen damals: viele Kinder starben früh. Gelehrte konnten sehr alt werden.",
+        "Wie oben. Berühmte Gelehrte wurden oft älter: Averroes (Ibn Ruschd) wurde etwa 72."
+      ],
+      koennen: [
+        "Sie waren gute Mathematiker und Sternkundler. Unsere Ziffern 1 bis 9 und die Null kamen über sie nach Europa. Von ihnen kommen spanische Wörter wie azúcar (Zucker) und naranja (Orange).",
+        "Astronomie (Sternkarten, Astrolabien), Mathematik (Algebra, Null, Dezimalsystem), Medizin, Papier, große Bibliotheken, Landwirtschaft (Reis, Zuckerrohr, Orangen, Baumwolle) und Architektur mit Hufeisenbögen. Arabisch ist in vielen spanischen Wörtern: azúcar, aceite, aceituna, almohada, ojalá."
+      ],
+      cadiz: [
+        "In Cádiz selbst ist von den Mauren nicht viel zu sehen. In ganz Andalusien gibt es aber Burgen, Brunnen und Patios.",
+        "Qādis blieb ein kleiner Hafen und hat wenige bauliche Reste. Der Einfluss zeigt sich eher in Wörtern und Patios, vermutlich teils auch in den engen Gassen der Altstadt."
+      ] },
+
+    { id: "f-spanier", name: "Spanier", when: "1262 bis heute", short: "Atlantikhafen, Kaufleute, Verfassung 1812", year: "ab 1262",
+      wo: [
+        "Nach 1262 war Cádiz wieder christlich und spanisch. Später wurde es zum wichtigsten Hafen für Schiffe nach Amerika.",
+        "Alfons X., „der Weise“, eroberte die Stadt 1262. 1493 startete Kolumbus’ zweite Reise in Cádiz. 1587 überfiel Francis Drake den Hafen, 1596 plünderten Engländer und Niederländer die Stadt. 1717 zog die Casa de Contratación, die Handelsbehörde für Amerika, von Sevilla nach Cádiz."
+      ],
+      stadt: [
+        "Die Altstadt liegt auf einer schmalen Halbinsel und kann nicht wachsen. Darum sind die Häuser hoch und schmal, und viele haben einen Turm auf dem Dach.",
+        "Auf der Landzunge ist wenig Platz: hohe, schmale Häuser mit Innenhöfen und Dachterrassen (azoteas). Reiche Kaufleute bauten im 18. Jh. Wachtürme auf ihre Häuser, dazu kamen Festungsmauern, Plätze und der Hafen."
+      ],
+      wasser: [
+        "Auf der Halbinsel gab es kaum Quellen. Man sammelte Regenwasser in Zisternen unter den Häusern.",
+        "Es gab kein eigenes Quellwasser. Regen wurde in Zisternen unter den Häusern gesammelt, später brachte man Wasser über Leitungen vom Festland."
+      ],
+      kleidung: [
+        "Reiche Kaufleute trugen im 18. Jahrhundert Perücken und kurze Hosen bis zum Knie. Frauen trugen weite Röcke und manchmal einen Schleier aus Spitze, die Mantilla.",
+        "Im 18. Jh.: Männer in Gehrock, Weste, Kniebundhosen und mit Perücke, Frauen in Kleidern mit Reifrock und Spitze. Seeleute und Arbeiter trugen einfache Kleidung."
+      ],
+      alter: [
+        "Um 1800 starben noch viele Kinder, und Schiffsreisen waren gefährlich.",
+        "Um 1800 lag die Lebenserwartung bei der Geburt noch bei etwa 30 bis 40 Jahren. Erst die moderne Medizin und Hygiene änderten das."
+      ],
+      koennen: [
+        "Seefahren, Handeln und Festungen bauen. Aus Amerika brachten sie Gold, Silber und Kakao nach Spanien. Darum gibt es heute heiße Schokolade zu den Churros.",
+        "Fernhandel über den Atlantik: Silber, Kakao, Tabak, Zucker. Dazu Festungsbau, Banken und Zeitungen. 1812 beschloss das Parlament in Cádiz die erste spanische Verfassung („La Pepa“). Berühmt ist auch der Karneval von Cádiz."
+      ],
+      cadiz: [
+        "Alles, was du siehst: Torre Tavira, Kathedrale, Festungen, Plätze und die große Brücke.",
+        "Neue Kathedrale (1722 bis 1838), Torre Tavira (1778 offizieller Wachturm), die Festungen Santa Catalina und San Sebastián, die Verfassung von 1812 und die Brücke „La Pepa“ (2015)."
+      ] }
+  ];
+
+  var SHIPS = {
+    "f-phonizier": [
+      "Ihre Handelsschiffe waren dick und rund und hatten ein großes Segel. Darin war viel Platz für Ladung. Die Fischerboote aus Gadir hatten vorne einen Pferdekopf aus Holz und hießen „Pferde“. Gebaut wurde aus Zedernholz aus dem Libanon.",
+      "Handelsschiffe waren breit und bauchig, mit einem Rahsegel und viel Laderaum. Kriegsschiffe waren lang und schlank, mit Rammsporn und zwei Reihen Ruderern übereinander (Bireme). Das Holz kam von Zedern und Kiefern aus dem Libanon. Antike Autoren beschreiben die Boote aus Gadir mit Pferdekopf am Bug, die „hippoi“ (Pferde)."
+    ],
+    "f-karthager": [
+      "Lange, schnelle Kriegsschiffe mit vielen Rudern und einer Metallspitze vorne zum Rammen. Die Römer fanden einmal ein gestrandetes Schiff und bauten es nach.",
+      "Die Flotte war das Rückgrat der Macht. Berühmt waren die Quinqueremen, große Ruderkriegsschiffe mit etwa 300 Ruderern und einem Rammsporn aus Bronze. Im Ersten Punischen Krieg bauten die Römer ein gestrandetes karthagisches Schiff nach, um selbst eine Flotte zu bekommen."
+    ],
+    "f-romer": [
+      "Dicke Frachtschiffe brachten Krüge mit Öl, Wein und Garum durchs Mittelmeer. Die Krüge heißen Amphoren. Auf Kriegsschiffen gab es eine Enterbrücke mit Haken, den „Raben“.",
+      "Frachtschiffe (naves onerariae) transportierten Getreide, Öl, Wein und Fischsoße in Amphoren, die größten mehrere hundert Tonnen. Garum aus Gades wurde so in ganz Rom verkauft. Kriegsschiffe waren Triremen und Quinqueremen. Der corvus, eine Enterbrücke mit Haken, machte Seeschlachten zu Kämpfen wie an Land."
+    ],
+    "f-westgoten": [
+      "Schiffe waren nicht ihre Stärke, sie waren ein Reitervolk. Die Byzantiner im Süden hatten schnelle Ruderschiffe, die Dromonen.",
+      "Die Westgoten hatten nur eine kleine Flotte. Die Seemacht im Mittelmeer lag bei den Byzantinern mit dem Dromon, einem schnellen Ruderkriegsschiff mit dreieckigen Segeln."
+    ],
+    "f-mauren": [
+      "Ihre Schiffe hatten ein dreieckiges Segel, das schräg an einer langen Stange hing. Damit kann man gut gegen den Wind segeln. Zum Navigieren benutzten sie das Astrolabium, ein Gerät, mit dem man Sterne misst.",
+      "Typisch ist das Lateinsegel, ein dreieckiges Segel an einer langen Rah. Es ermöglicht, schräg gegen den Wind zu kreuzen. Werften gab es zum Beispiel in Sevilla und Almería. Im 10. Jh. hatte Córdoba eine bedeutende Flotte. Seefahrer nutzten Astrolabien."
+    ],
+    "f-spanier": [
+      "Kolumbus fuhr mit drei Schiffen: Niña, Pinta und Santa María. Später kamen riesige Galeonen, die Silber und Kakao aus Amerika nach Spanien brachten.",
+      "Karavellen (klein, wendig, Lateinsegel) und die Nao Santa María (Rahsegel) für die Entdeckungsfahrten. Galeonen fuhren in den Silberflotten der „Flotas de Indias“ im Geleit. 1805 kämpften bei Trafalgar, nicht weit von Cádiz, Spanier und Franzosen gegen die Briten. Das spanische Schiff Santísima Trinidad hatte vier Kanonendecks und über 130 Kanonen."
+    ]
+  };
+  FOLK.forEach(function (f) { f.schiffe = SHIPS[f.id]; });
+
+  var SAIL = {
+    "f-phonizier": [
+      "Ein großes Viereck-Segel an einem Mast. Das Schiff fuhr gut, wenn der Wind von hinten kam. Kam er von vorn, mussten Ruderer ran, oder man wartete im Hafen. Im Winter blieben viele Schiffe zu Hause.",
+      "Ein Rahsegel am einzelnen Mast, dazu Riemen als Hilfsantrieb. Kriegsschiffe hatten Ruderer in ein oder zwei Reihen (Bireme). Mit Wind von hinten oder von der Seite lief das Schiff gut, hoch am Wind kaum: Grob kam man nur etwa 75 bis 80 Grad an den Wind heran und trieb dabei stark ab. Gesteuert wurde mit großen Seitenrudern am Heck. Man fuhr meist küstennah, nach Sicht und Sternen, im Sommerhalbjahr und in Tagesetappen."
+    ],
+    "f-karthager": [
+      "Handelsschiffe fuhren wie bei den Phöniziern mit Viereck-Segel. Kriegsschiffe wurden im Kampf gerudert. Das Segel ließ man vorher an Land, damit das Schiff schnell und wendig war.",
+      "Auf Reisen segelten auch Kriegsschiffe mit Rahsegel. Vor dem Gefecht wurden Segel und oft auch der Mast an Land gelassen, im Kampf entschieden allein die Ruderer, im gleichen Takt. Kurzzeitig schafften solche Ruderschiffe wohl 7 bis 9 Knoten, auf langen Strecken dauerhaft viel weniger. Das waren grobe Schätzungen aus Nachbauten."
+    ],
+    "f-romer": [
+      "Große Frachter fuhren mit einem riesigen Viereck-Segel und einem kleineren Segel vorn am Bug. Von Alexandria nach Rom dauerte es bei gutem Wind etwa 2 bis 3 Wochen, zurück viel länger, weil der Wind meist von vorn kam.",
+      "Frachter mit Rahsegel, darüber ein Toppsegel und vorn ein Artemon, ein kleines Segel schräg am Bug, das beim Steuern half. Die Hinfahrt Alexandria nach Rom mit Wind von hinten dauerte oft 2 bis 3 Wochen, die Rückfahrt gegen die vorherrschenden Winde einen Monat oder mehr. Lateinsegel tauchen im Mittelmeer in römischer Zeit auf. Kriegsschiffe wurden gerudert."
+    ],
+    "f-westgoten": [
+      "Sie waren keine Seefahrer. Im Süden benutzten die Byzantiner Schiffe mit dreieckigen Segeln und Rudern.",
+      "Der Dromon der Byzantiner trug Lateinsegel (dreieckig, an langer Rah) und Ruderer in ein oder zwei Reihen. Mit Lateinsegeln kommt man etwas höher an den Wind als mit Rahsegeln, dafür muss die lange Rah bei jeder Wende um den Mast geführt werden."
+    ],
+    "f-mauren": [
+      "Dreieckige Segel, die Lateinsegel. Damit kann man schräg gegen den Wind segeln, besser als mit dem Viereck-Segel. Dasselbe Prinzip siehst du heute noch an jedem Segelboot.",
+      "Lateinsegel: dreieckig, an einer langen schrägen Rah. Man kam grob 55 bis 65 Grad an den Wind heran, besser als mit Rahsegeln. Eine Wende ist aufwendig, weil die lange Rah auf die andere Mastseite muss. Kriegsgaleeren wurden zusätzlich gerudert. Zur Navigation dienten Astrolabium und später der Magnetkompass, der im Mittelmeer ab dem 12. und 13. Jahrhundert bekannt wird."
+    ],
+    "f-spanier": [
+      "Kolumbus nutzte den Passatwind: Mit Wind von hinten ging es über den Atlantik nach Westen. Die Schiffe hatten Viereck-Segel und hinten ein Dreieckssegel. Heute segeln Yachten viel näher am Wind.",
+      "Die Niña war zunächst mit Lateinsegeln gebaut und wurde auf den Kanaren auf Rahsegel umgerüstet, weil man mit dem Nordostpassat Wind von hinten hatte. Galeonen führten Rahsegel an Fock- und Großmast, einen Besan mit Lateinsegel hinten und ein Bugspriet-Segel. Das Heckruder hatte schon im Mittelalter das Seitenruder abgelöst. Stagsegel und Gaffelsegel (17. und 18. Jh.) brachten die Schiffe näher an den Wind."
+    ]
+  };
+  FOLK.forEach(function (f) { f.segeln = SAIL[f.id]; });
+
+  function polar(deg) {
+    var r = 46, cx = 60, cy = 56, a = deg * Math.PI / 180;
+    var x1 = cx - r * Math.sin(a), x2 = cx + r * Math.sin(a), y = cy - r * Math.cos(a);
+    return '<svg class="pol" viewBox="0 0 120 112" role="img" aria-label="Sperrbereich ' + deg + ' Grad links und rechts vom Wind">' +
+      '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '"/>' +
+      '<path class="ng" d="M' + cx + ' ' + cy + ' L' + x1.toFixed(1) + ' ' + y.toFixed(1) + ' A' + r + ' ' + r + ' 0 0 1 ' + x2.toFixed(1) + ' ' + y.toFixed(1) + ' Z"/>' +
+      '<line x1="' + cx + '" y1="2" x2="' + cx + '" y2="16"/><polygon points="' + (cx - 4) + ',12 ' + (cx + 4) + ',12 ' + cx + ',19"/>' +
+      '<text x="' + (cx + 8) + '" y="14">Wind</text></svg>';
+  }
+
+  var SCALE = [
+    ["Phönizier gründen Gadir (Überlieferung)", -1100],
+    ["Hamilkar Barkas landet in Spanien", -237],
+    ["Gades wird römisch", -206],
+    ["Westgoten (grob: 500)", 500],
+    ["Mauren kommen", 711],
+    ["Alfons X. erobert Cádiz zurück", 1262],
+    ["Kolumbus’ zweite Reise ab Cádiz", 1493],
+    ["Verfassung von 1812", 1812]
+  ];
+
+  var COMPARE = [
+    ["Phönizier", "Zisternen und Brunnen", "Befestigte Hafeninsel", "Seefahrt, Handel, Schrift", "Rundes Handelsschiff, Pferdekopf-Boote"],
+    ["Karthager", "Zisternen", "Handels- und Kriegshafen, hohe Mauer", "Flotte, Landwirtschaft, Söldner", "Quinquereme mit Rammsporn"],
+    ["Römer", "Aquädukte, Thermen, Brunnen", "Raster, Forum, Theater", "Bauen, Recht, Verwalten", "Frachter mit Amphoren, Trireme mit Enterbrücke"],
+    ["Westgoten", "Römisches Erbe verfällt", "Kirchen, kleinere Orte", "Reiter, Goldschmiede", "Kaum Flotte (Byzanz: Dromon)"],
+    ["Mauren", "Hammams, Patios, Bewässerung", "Medina, Moschee, Burg", "Sterne, Mathematik, Gärten", "Dreieckiges Lateinsegel"],
+    ["Spanier", "Zisternen unter den Häusern", "Hohe schmale Häuser, Türme", "Atlantikhandel, Verfassung", "Karavelle, Nao, Galeone"]
+  ];
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function fmtN(n) { return n.toLocaleString("de-DE", { maximumFractionDigits: 1, minimumFractionDigits: 1 }); }
+  function ye(y) { return y < 0 ? Math.abs(y) + " v. Chr." : y + " n. Chr."; }
+
+  var h = "";
+  h += '<h2 class="sec-t">Auf einen Blick</h2><ul class="era">';
+  FOLK.forEach(function (f) {
+    h += '<li><a href="#' + f.id + '"><b>' + esc(f.name) + '</b><span class="y">' + esc(f.year) + '</span><span class="s">' + esc(f.short) + '</span></a></li>';
+  });
+  h += '</ul>';
+
+  FOLK.forEach(function (f) {
+    h += '<section class="card" id="' + f.id + '"><h2>' + esc(f.name) + '</h2><span class="when">' + esc(f.when) + '</span>';
+    ROWS.forEach(function (r) {
+      h += '<div class="row"><span class="lab">' + r[1] + '</span>' +
+        '<div class="t h"><span class="who" data-name="h"></span><p>' + esc(f[r[0]][0]) + '</p></div>' +
+        '<div class="t n"><span class="who" data-name="n"></span><p>' + esc(f[r[0]][1]) + '</p></div></div>';
+    });
+    h += '<a class="back" href="#app">Nach oben</a></section>';
+  });
+
+  h += '<h2 class="sec-t" id="segeln">Vom Rahsegel zur Yacht</h2>' +
+    '<p>Wie nah kommt ein Schiff an den Wind? Die rote Fläche zeigt, wohin es nicht segeln kann. Je schmaler sie ist, desto besser kommt man gegen den Wind. Grobe Richtwerte, je nach Schiff, Seegang und Abdrift.</p><div class="pols">';
+  [["Rahsegel", 78, "ca. 75 bis 80°"], ["Lateinsegel", 60, "ca. 55 bis 65°"], ["Gaffel- und Stagsegel", 50, "ca. 50°"], ["Moderne Yacht (Bermuda)", 42, "ca. 40 bis 45°"]].forEach(function (p) {
+    h += '<figure class="polfig">' + polar(p[1]) + '<figcaption><b>' + p[0] + '</b><span>' + p[2] + ' zum Wind</span></figcaption></figure>';
+  });
+  h += '</div><div class="scroll"><table><thead><tr><th>Antrieb</th><th>Zeit</th><th>Beispiele</th><th>Besonderheit</th></tr></thead><tbody>' +
+    '<tr><td>Riemen</td><td>Bireme ab etwa dem 8. Jh. v. Chr.</td><td>Phönizier, Karthager, Römer</td><td>Unabhängig vom Wind. Eine Trireme hatte rund 170 Ruderer, eine Quinquereme etwa 300. Kurze Sprints mit 7 bis 9 Knoten, aber viel Besatzung und Proviant.</td></tr>' +
+    '<tr><td>Rahsegel</td><td>seit Jahrtausenden</td><td>Phönizier, Römer, Santa María</td><td>Stark mit Wind von hinten oder von der Seite. Hoch am Wind trieb das Schiff stark ab.</td></tr>' +
+    '<tr><td>Lateinsegel</td><td>römische Zeit, im Mittelalter weit verbreitet</td><td>Byzantiner, Mauren, Karavellen</td><td>Dreieckig, näher am Wind. Die Wende ist aufwendig, weil die lange Rah um den Mast muss.</td></tr>' +
+    '<tr><td>Gaffel- und Stagsegel</td><td>17. und 18. Jh.</td><td>Fregatten, holländische Schiffe</td><td>Segel in Längsrichtung des Schiffs lassen sich bei der Wende leichter bedienen.</td></tr>' +
+    '<tr><td>Bermuda-Rigg</td><td>frühes 20. Jh.</td><td>moderne Yachten</td><td>Hohes, schmales Dreieckssegel mit Profil. Dazu Vorsegel, die zusammen ein Profil bilden.</td></tr>' +
+    '</tbody></table></div>' +
+    '<p>Zum Vergleich mit eurer Fahrt: 5,5 Knoten sind in 12 Stunden etwa 66 Seemeilen. Antike Segelschiffe schafften je nach Wind etwa 40 bis 120 Seemeilen am Tag, wenn sie nicht anlegen mussten. Nach Cádiz kam man damals meist mit dem Wind von hinten oder wartete im Hafen.</p>';
+  h += '<h2 class="sec-t">Die Völker im Vergleich</h2><div class="scroll"><table><thead><tr><th>Volk</th><th>Wasser</th><th>Stadtidee</th><th>Stärke</th><th>Schiffe</th></tr></thead><tbody>';
+  COMPARE.forEach(function (c) { h += '<tr><td>' + c.map(esc).join("</td><td>") + '</td></tr>'; });
+  h += '</tbody></table></div>';
+
+  h += '<h2 class="sec-t">Zeitstrahl zum Abschreiten</h2><p>Auf der Promenade steht 1 Meter für 100 Jahre. Der Nullpunkt ist heute (2026). Wer läuft am weitesten zurück?</p>' +
+    '<div class="scroll"><table><thead><tr><th>Ereignis</th><th class="num">Jahr</th><th class="num">Meter ab heute</th></tr></thead><tbody>';
+  SCALE.forEach(function (s) {
+    h += '<tr><td>' + esc(s[0]) + '</td><td class="num">' + ye(s[1]) + '</td><td class="num">' + fmtN((2026 - s[1]) / 100) + ' m</td></tr>';
+  });
+  h += '</tbody></table></div>';
+
+  h += '<h2 class="sec-t">Ideen für die Rallye</h2><div class="card"><ul class="ideas">' +
+    '<li><b>Zeitstrahl abschreiten:</b> Mit der Tabelle oben legen die Jungs auf der Promenade den Zeitstrahl in Schritten oder Rollerlängen. {h} stellt fest, wer weiter hinten liegt. {n} rechnet die Meter aus.</li>' +
+    '<li><b>Wer bin ich? ({h}):</b> „Ich trage eine Toga.“ Römer. „Ich fahre mit Elefanten über die Alpen.“ Karthager. „Ich male mit Purpur.“ Phönizier. „Ich baue ein Hammam.“ Mauren.</li>' +
+    '<li><b>Reihenfolge legen ({h}):</b> Sechs Kärtchen mit Bildern: Schiff, Elefant, Toga, Goldspange, Brunnen im Patio, Churros mit Schokolade.</li>' +
+    '<li><b>Römische Zahlen ({n}):</b> Was ist MCMXII? Wie schreibt man 1262? Zum Vergleich: die phönizische Strichzahl für 23.</li>' +
+    '<li><b>Arabische Wörter ({n}):</b> Welche spanischen Wörter kommen aus dem Arabischen? azúcar, aceite, almohada, ojalá. Auf Speisekarten und Schildern suchen und fotografieren.</li>' +
+    '<li><b>Garum-Quiz:</b> Die Römer würzten fast alles mit Fischsoße aus Gades, so wie wir heute Salz oder Sojasoße nehmen. Frage an {h}: Würdest du sie probieren? {n} schätzt, wie viele Fische für einen Krug gebraucht wurden.</li>' +
+    '<li><b>Schiffe zuordnen:</b> Im Hafen Puerto América Schiffe anschauen und fragen: Welches Volk hätte so ein Schiff gebaut? Rundes Frachtschiff, Schiff mit Dreiecksegel, Schiff mit Rammsporn. Wer findet ein Boot mit Dreiecksegel (Lateinsegel)?</li>' +
+    '<li><b>Schneckenzahl schätzen:</b> Wie viele Schnecken für ein Purpurgewand? Zehn, hundert oder tausende?</li></ul></div>';
+
+  h += '<p class="note">Die Angaben sind gerundet und stammen aus allgemeinem Hintergrundwissen, nicht aus einer einzelnen Quelle. Bei Jahreszahlen und Daten zu Cádiz lohnt vor der Rallye ein Blick in <a href="https://www.worldhistory.org/Gades" target="_blank" rel="noopener">World History: Gades</a>, <a href="https://www.britannica.com/place/Cadiz-Spain" target="_blank" rel="noopener">Britannica: Cádiz</a> und <a href="https://andalucia.com/cities/cadiz/history.htm" target="_blank" rel="noopener">Andalucia.com: History of Cadiz</a>. Der Gründungszeitpunkt von Gadir ist unsicher: Die antike Überlieferung nennt etwa 1100 v. Chr., die Ausgrabungen zeigen die ältesten Spuren im 9. bis 8. Jahrhundert v. Chr.</p>';
+
+  h = h.replace(/\{n\}/g, '<span data-name="n"></span>').replace(/\{h\}/g, '<span data-name="h"></span>');
+  document.getElementById("content").innerHTML = h;
+
+  var app = document.getElementById("app");
+  var LSN = "cadiz-namen-v1", DEF = { n: "Kind 1", h: "Kind 2" }, NAMES = { n: "", h: "" };
+  try { var rn = localStorage.getItem(LSN); if (rn) { var on = JSON.parse(rn); NAMES.n = String(on.n || "").slice(0, 20); NAMES.h = String(on.h || "").slice(0, 20); } } catch (e) {}
+  function nameOf(p) { var v = (NAMES[p] || "").trim(); return v || DEF[p]; }
+  function refreshNames() {
+    ["n", "h"].forEach(function (p) {
+      Array.prototype.forEach.call(document.querySelectorAll('[data-name="' + p + '"]'), function (el) { el.textContent = nameOf(p); });
+    });
+  }
+  ["n", "h"].forEach(function (p) {
+    var inp = document.getElementById("name-" + p);
+    if (!inp) return;
+    inp.value = NAMES[p];
+    inp.addEventListener("input", function () {
+      NAMES[p] = inp.value.slice(0, 20);
+      try { localStorage.setItem(LSN, JSON.stringify(NAMES)); } catch (e) {}
+      refreshNames();
+    });
+  });
+  refreshNames();
+  var LS = "zeitreise-cadiz-mode";
+  function setMode(m) {
+    app.setAttribute("data-mode", m);
+    Array.prototype.forEach.call(document.querySelectorAll(".seg button"), function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-mode") === m));
+    });
+    try { localStorage.setItem(LS, m); } catch (e) {}
+  }
+  document.querySelector(".seg").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-mode]");
+    if (b) setMode(b.getAttribute("data-mode"));
+  });
+  try { var saved = localStorage.getItem(LS); if (saved === "h" || saved === "n" || saved === "both") setMode(saved); } catch (e) {}
+})();
+</script>
+
+</body>
+</html>

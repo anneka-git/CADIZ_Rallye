@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Cádiz-Rallye</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: eine Spalte fürs Handy. Blaues Hafenband oben, darunter eine Route aus Stationen wie eine Tidenlinie. */
+:root {
+  --bg: #EDF2F4;
+  --surface: #FFFFFF;
+  --ink: #0C2233;
+  --muted: #4E6376;
+  --line: #CBD8E0;
+  --tint: #DCEAF0;
+  --sea: #0F6E8C;
+  --on-sea: #FFFFFF;
+  --sun: #F0B02E;
+  --on-sun: #2A1D00;
+  --ok: #1B7F4F;
+  --ok-bg: #DDF3E7;
+  --bad: #A93626;
+  --bad-bg: #F8E1DD;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1B27; --surface: #102636; --ink: #E7F0F5; --muted: #9DB3C2; --line: #234055;
+    --tint: #16303F; --sea: #4FB3D3; --on-sea: #06202D; --sun: #F2BC4B; --on-sun: #2A1D00;
+    --ok: #5CCB92; --ok-bg: #12382A; --bad: #F08A7A; --bad-bg: #40201C;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1B27; --surface: #102636; --ink: #E7F0F5; --muted: #9DB3C2; --line: #234055;
+  --tint: #16303F; --sea: #4FB3D3; --on-sea: #06202D; --sun: #F2BC4B; --on-sun: #2A1D00;
+  --ok: #5CCB92; --ok-bg: #12382A; --bad: #F08A7A; --bad-bg: #40201C;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.5;
+}
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.12; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: var(--sea); }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+
+.wrap {
+  max-width: 640px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 40px;
+}
+.stack { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+/* Hafenband */
+.hero { overflow: hidden; background: var(--sea); color: var(--on-sea); margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))); margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px))); padding: 28px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); }
+.eyebrow { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; opacity: .85; }
+.hero h1 { font-size: clamp(2.2rem, 9vw, 3.1rem); font-weight: 800; margin: 6px 0 8px; }
+.hero p { max-width: 36ch; opacity: .95; }
+.wave { display: block; width: calc(100% + 32px); margin: 18px -16px -1px; height: 22px; }
+.wave path { fill: var(--bg); }
+
+.section-t { font-size: 1.15rem; font-weight: 800; margin-top: 8px; }
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.choice {
+  text-align: left; background: var(--surface); border: 2px solid var(--line); border-radius: 12px;
+  padding: 12px 14px; min-height: 64px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; min-width: 0;
+}
+.choice b { font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; }
+.choice span { color: var(--muted); font-size: .9rem; }
+.choice[aria-pressed="true"] { border-color: var(--sea); background: var(--tint); }
+.btn {
+  background: var(--sea); color: var(--on-sea); border: 0; border-radius: 12px; min-height: 52px;
+  padding: 12px 18px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.ghost { background: transparent; color: var(--sea); border: 2px solid var(--sea); }
+.link-btn { background: none; border: 0; color: var(--muted); text-decoration: underline; padding: 10px 4px; cursor: pointer; font-size: .9rem; min-height: 44px; }
+
+details.note { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+details.note summary { cursor: pointer; font-weight: 700; min-height: 28px; }
+details.note ul { margin: 10px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+
+/* Kopfzeile in Route und Station */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-block: 14px; flex-wrap: wrap; }
+.who { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.who b { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; }
+.badge { background: var(--sun); color: var(--on-sun); border-radius: 999px; padding: 4px 12px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sum { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.sum h1 { font-size: 1.5rem; font-weight: 800; }
+.meter { height: 10px; background: var(--tint); border-radius: 999px; overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--sea); width: 0; }
+.muted { color: var(--muted); font-size: .92rem; }
+
+/* Route */
+.route { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; position: relative; }
+.route::before { content: ""; position: absolute; left: 11px; top: 14px; bottom: 14px; width: 3px; background: var(--line); border-radius: 2px; }
+.stop { position: relative; padding-left: 36px; }
+.stop .dot { position: absolute; left: 3px; top: 18px; width: 19px; height: 19px; border-radius: 50%; background: var(--bg); border: 3px solid var(--line); }
+.stop.is-part .dot { border-color: var(--sun); }
+.stop.is-done .dot { background: var(--ok); border-color: var(--ok); }
+.stop a { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; text-decoration: none; color: var(--ink); min-height: 64px; }
+.stop-b { flex: 1; min-width: 0; }
+.stop-t { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; }
+.stop-m { color: var(--muted); font-size: .9rem; }
+.stop-p { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--sea); white-space: nowrap; }
+.stop.is-done .stop-p { color: var(--ok); }
+
+/* Station */
+.names { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.nm { display: flex; flex-direction: column; gap: 4px; font-size: .9rem; color: var(--muted); min-width: 0; }
+.inp { background: var(--surface); border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 52px; min-width: 0; width: 100%; color: var(--ink); }
+.back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 700; text-decoration: none; }
+.st-head { display: flex; flex-direction: column; gap: 6px; }
+.st-head h1 { font-size: 1.9rem; font-weight: 800; }
+.where { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; color: var(--muted); font-size: .95rem; }
+.tip { background: var(--tint); border-radius: 10px; padding: 10px 12px; font-size: .95rem; }
+.tip b { font-weight: 700; }
+
+.task { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.task.is-done { border-color: var(--ok); }
+.task.is-skip { opacity: .75; }
+.task-h { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.kind { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: var(--sea); }
+.pts { font-size: .9rem; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+.is-done .pts { color: var(--ok); }
+.q { font-size: 1.08rem; }
+.opts { display: flex; flex-direction: column; gap: 8px; }
+.opt { text-align: left; background: var(--bg); border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 52px; cursor: pointer; }
+.opt:disabled { opacity: .5; cursor: not-allowed; text-decoration: line-through; }
+.opt.ok { border-color: var(--ok); background: var(--ok-bg); text-decoration: none; opacity: 1; }
+.opt.miss { border-color: var(--bad); background: var(--bad-bg); text-decoration: none; opacity: 1; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.field { flex: 1 1 140px; min-width: 0; background: var(--bg); border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 52px; }
+.unit { align-self: center; color: var(--muted); }
+.fb { font-weight: 700; }
+.fb.bad { color: var(--bad); }
+.res { border-radius: 10px; padding: 10px 12px; background: var(--ok-bg); display: flex; flex-direction: column; gap: 4px; }
+.res.miss { background: var(--bad-bg); }
+.res.skip { background: var(--tint); }
+.res b { font-weight: 700; }
+
+.panel { background: var(--surface); border: 2px solid var(--sun); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.panel.idle { border: 1px dashed var(--line); }
+.digit { font-family: var(--font-display); font-weight: 800; font-size: 4rem; line-height: 1; background: var(--sun); color: var(--on-sun); border-radius: 14px; padding: 6px 22px; align-self: flex-start; font-variant-numeric: tabular-nums; }
+.digits-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.code-in { max-width: 8ch; text-align: center; font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; letter-spacing: .15em; }
+
+.rank { background: var(--sea); color: var(--on-sea); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.rank h2 { font-size: 1.6rem; font-weight: 800; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .meter i { transition: width .4s ease; }
+}
+</style>
+
+</head>
+<body>
+<div id="app" class="wrap"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* n = ältere Stufe (10 Jahre, 5./6. Klasse), h = jüngere Stufe (7 Jahre, 2. Klasse). Namen sind frei eintragbar. */
+  var PL = {
+    n: { def: "Kind 1", note: "10 Jahre · 5./6. Klasse" },
+    h: { def: "Kind 2", note: "7 Jahre · 2. Klasse" }
+  };
+  var LSN = "cadiz-namen-v1";
+  var NAMES = loadNames();
+  function loadNames() {
+    try {
+      var r = localStorage.getItem(LSN);
+      if (r) { var o = JSON.parse(r); return { n: String(o.n || "").slice(0, 20), h: String(o.h || "").slice(0, 20) }; }
+    } catch (e) {}
+    return { n: "", h: "" };
+  }
+  function saveNames() { try { localStorage.setItem(LSN, JSON.stringify(NAMES)); } catch (e) {} }
+  function nameOf(p) { var v = (NAMES[p] || "").trim(); return v || PL[p].def; }
+  var TAGS = {
+    halb: { name: "Halbtag", sub: "Wasser & Bewegung", text: "Ankunft bis zum Abendessen um 18 Uhr" },
+    ganz: { name: "Ganztag", sub: "Geschichte & Altstadt", text: "Von den Churros um 9:30 bis zum Sonnenuntergang" }
+  };
+  var KIND = { photo: "Foto", challenge: "Action", riddle: "Was könnte das sein?", quiz: "Quiz", free: "Zählen", num: "Rechnen" };
+
+  /* who: n = ältere Stufe, h = jüngere Stufe, nh = beide. from: Antwort aus früherer Aufgabe weiterrechnen. */
+  var DATA = {
+    halb: [
+      { id: "s1", title: "Hafen & Boote", time: "Start", where: "Puerto América, Punta de San Felipe", map: "Puerto América Cádiz marina",
+        intro: "Ihr seid da! Bevor es losgeht, schaut euch den Hafen genau an.", codeN: 4, codeH: 7,
+        tasks: [
+          { id: "a", who: "nh", type: "photo", pts: 2, q: "Findet das größte Boot im Hafen und fotografiert es. Das Foto bleibt auf dem Handy." },
+          { id: "b", who: "h", type: "quiz", pts: 3, q: "Am Kai stehen dicke Metallpfosten, die Poller. Wofür sind sie da?", opts: ["Daran bindet man Schiffe fest", "Daran hängt man Segel auf", "Damit man das Wasser misst"], ok: 0, why: "Die Leinen der Schiffe werden um den Poller gelegt." },
+          { id: "c", who: "h", type: "free", num: true, pts: 2, unit: "Boote", q: "Wie viele Boote mit Mast zählt ihr in der Reihe vor euch?" },
+          { id: "d", who: "n", type: "free", num: true, pts: 2, unit: "Schritte", q: "Geht an eurem Schiff vom Bug bis zum Heck und zählt eure Schritte." },
+          { id: "e", who: "n", type: "num", from: { id: "d", mul: 0.5 }, tol: 0.5, pts: 3, unit: "m", q: "Ein Schritt ist etwa 0,5 m lang. Wie lang ist euer Schiff ungefähr in Metern?", why: "Schritte mal 0,5 ergibt die Länge. Vergleicht sie mit den Papieren des Schiffs." },
+          { id: "f", who: "n", type: "quiz", pts: 3, q: "Im Hafen steigt und sinkt das Wasser (Gezeiten). Wie oft ist ungefähr Hochwasser in 24 Stunden?", opts: ["Einmal", "Zweimal", "Viermal"], ok: 1, why: "Etwa alle 12,5 Stunden. Also zweimal am Tag Hochwasser und zweimal Niedrigwasser." },
+          { id: "g", who: "h", type: "quiz", pts: 3, q: "Die alten Schiffe hatten große viereckige Segel (Rahsegel). Euer Segel ist dreieckig. Welches kommt besser gegen den Wind?", opts: ["Das dreieckige", "Das viereckige", "Beide gleich gut"], ok: 0, why: "Ein hohes dreieckiges Segel kommt viel näher an den Wind. Alte Rahsegler kamen nur schlecht gegen den Wind voran." },
+          { id: "h", who: "n", type: "num", ans: 30, tol: 0, pts: 3, unit: "Grad", q: "Ein antikes Schiff mit Rahsegel kam etwa 75 Grad an den Wind heran. Eure Yacht kommt etwa 45 Grad heran. Um wie viele Grad besser seid ihr?", why: "75 minus 45 ergibt 30. Je kleiner der Winkel, desto besser kommt man gegen den Wind." }
+        ] },
+      { id: "s2", title: "Brücke La Pepa & Promenade", time: "Rollern", where: "Am Wasser entlang Richtung Altstadt", map: "Puente de la Constitución de 1812 Cádiz",
+        intro: "Auf dem Weg in die Stadt: eine große Brücke, eine alte Mauer und eure Roller.", codeN: 2, codeH: 9,
+        tasks: [
+          { id: "a", who: "nh", type: "photo", pts: 2, q: "Fotografiert die große Brücke über die Bucht, sobald ihr sie seht. Sie heißt „La Pepa“." },
+          { id: "b", who: "n", type: "quiz", pts: 3, q: "Die Brücke heißt „La Pepa“, weil die spanische Verfassung 1812 am Tag des heiligen José verkündet wurde. Pepe ist ein Spitzname für …", opts: ["José", "Pedro", "Pablo"], ok: 0, why: "Pepe und Pepa kommen von José. Die Verfassung von 1812 wurde in Cádiz beschlossen." },
+          { id: "c", who: "n", type: "num", ans: 203, tol: 0, pts: 3, unit: "Jahre", q: "Die Verfassung ist von 1812, die Brücke wurde 2015 eröffnet. Wie viele Jahre liegen dazwischen?", why: "2015 minus 1812 ergibt 203." },
+          { id: "d", who: "nh", type: "quiz", pts: 3, q: "Warum ist die alte Stadtmauer so dick?", opts: ["Damit Kanonenkugeln sie nicht kaputt machen", "Damit man darauf Fußball spielen kann", "Damit sie schön aussieht"], ok: 0, why: "Dicke Mauern schützten die Stadt vor Piraten und Angreifern." },
+          { id: "e", who: "nh", type: "challenge", pts: 3, q: "Rollert 100 Meter, ohne den Fuß abzusetzen. Helm auf! Der andere zählt laut mit." }
+        ] },
+      { id: "s3", title: "Skatepark Santa Bárbara", time: "Action", where: "Gegend Santa Bárbara", map: "Skatepark Santa Bárbara Cádiz",
+        intro: "Helm und Schoner an. Erst zuschauen, dann fahren.", tip: "Lage und Zustand des Parks vor Ort anschauen. Auf nassem Boden nicht fahren.", codeN: 6, codeH: 1,
+        tasks: [
+          { id: "a", who: "nh", type: "photo", pts: 2, q: "Fotografiert das coolste Hindernis im Park." },
+          { id: "b", who: "nh", type: "free", num: true, pts: 2, unit: "Stück", q: "Zählt die Rampen und Hindernisse im Park." },
+          { id: "c", who: "h", type: "quiz", pts: 3, q: "Eine Halfpipe ist ein halbes Rohr. Wie viele Halfpipes ergeben ein ganzes Rohr?", opts: ["1", "2", "4"], ok: 1, why: "Zwei Hälften ergeben ein Ganzes." },
+          { id: "d", who: "n", type: "quiz", pts: 3, q: "Eine Quarterpipe ist ein Viertel eines Kreises. Wie viele Quarterpipes ergeben einen ganzen Kreis?", opts: ["2", "3", "4"], ok: 2, why: "Vier Viertel ergeben ein Ganzes." },
+          { id: "e", who: "nh", type: "challenge", pts: 3, q: "Zehn Pushes hintereinander, ohne abzusetzen. Wer es schafft, tippt auf Geschafft." }
+        ] },
+      { id: "s4", title: "Castillo de Santa Catalina", time: "La Caleta", where: "Strand La Caleta, Burg am Rand", map: "Castillo de Santa Catalina Cádiz",
+        intro: "Die Burg liegt direkt am Strand. Heute schaut ihr sie von außen an.", tip: "Wollt ihr hinein, vorher die Öffnungszeiten prüfen.", codeN: 3, codeH: 8,
+        tasks: [
+          { id: "a", who: "nh", type: "photo", pts: 2, q: "Fotografiert die Burg so, dass man ihre Form sieht." },
+          { id: "b", who: "nh", type: "riddle", pts: 3, q: "Die gelben Mauersteine sehen löchrig aus. Schaut genau hin. Was steckt darin?", opts: ["Muschelstücke und Sand", "Goldstaub", "Kleine Zahnräder"], ok: 0, why: "Der Stein heißt Austernstein. Er besteht aus Sand und Muschelresten aus dem Meer." },
+          { id: "c", who: "h", type: "quiz", pts: 3, q: "Warum steht die Burg direkt am Meer?", opts: ["Man sieht Schiffe von Feinden früh und kann sie abwehren", "Weil der Strand dort schön ist", "Weil sonst kein Platz war"], ok: 0, why: "Von der Burg aus behielt man das Meer im Blick." },
+          { id: "d", who: "n", type: "quiz", pts: 3, q: "Welches Meer liegt vor La Caleta?", opts: ["Mittelmeer", "Atlantischer Ozean", "Nordsee"], ok: 1, why: "Cádiz liegt am Atlantik. Weiter südlich beginnt die Meerenge von Gibraltar, dort geht es ins Mittelmeer." }
+        ] },
+      { id: "s5", title: "Abendessen", time: "bis 18:00", where: "Altstadt oder zurück am Boot", map: "restaurantes casco antiguo Cádiz",
+        intro: "Spätestens um 18 Uhr gibt es Abendessen. Dabei ein letzter Spanisch-Test.", codeN: 5, codeH: 0,
+        tasks: [
+          { id: "a", who: "nh", type: "quiz", k: "Spanisch", pts: 3, q: "Wie sagt man „Wasser“ auf Spanisch?", opts: ["agua", "leche", "pan"], ok: 0, why: "Agua heißt Wasser, leche Milch und pan Brot." },
+          { id: "b", who: "h", type: "photo", pts: 2, q: "Fotografiert euer Essen, bevor ihr anfangt." },
+          { id: "c", who: "n", type: "quiz", k: "Spanisch", pts: 3, q: "Wie bittet man um die Rechnung?", opts: ["La cuenta, por favor", "La carta, por favor", "El agua, por favor"], ok: 0, why: "La carta ist die Speisekarte, la cuenta die Rechnung." },
+          { id: "d", who: "n", type: "quiz", k: "Spanisch", pts: 3, q: "Was ist „pescado frito“?", opts: ["Frittierter Fisch", "Frisches Obst", "Gebratenes Huhn"], ok: 0, why: "Pescado ist Fisch, frito heißt frittiert." },
+          { id: "e", who: "nh", type: "free", num: true, pts: 2, unit: "km", q: "Wie viele Kilometer seid ihr heute ungefähr gerollert und gelaufen? Schätzt." }
+        ] }
+    ],
+    ganz: [
+      { id: "s1", title: "Churros-Frühstück", time: "9:30", where: "Café in der Altstadt, nah am Hafen", map: "churrería Cádiz casco antiguo",
+        intro: "Erst Churros, dann Geschichte. Das Frühstück zählt schon.", codeN: 8, codeH: 3,
+        tasks: [
+          { id: "a", who: "nh", type: "photo", pts: 2, q: "Fotografiert den Teller, bevor ihr anfangt zu essen." },
+          { id: "b", who: "h", type: "quiz", pts: 3, q: "Womit tunkt man Churros in Spanien?", opts: ["Heiße Schokolade", "Ketchup", "Senf"], ok: 0, why: "Churros mit heißer Schokolade sind ein Klassiker." },
+          { id: "c", who: "n", type: "quiz", k: "Spanisch", pts: 3, q: "Was heißt „desayuno“?", opts: ["Frühstück", "Abendessen", "Nachtisch"], ok: 0, why: "Desayuno ist das Frühstück." },
+          { id: "d", who: "nh", type: "free", num: true, pts: 2, unit: "Churros", q: "Zählt die Churros auf dem Teller, bevor ihr esst." },
+          { id: "e", who: "n", type: "num", from: { id: "d", div: 4 }, tol: 0, pts: 3, unit: "pro Person", q: "Teilt die Churros gerecht auf vier Personen. Wie viele ganze Churros bekommt jeder?", why: "Teilen ohne Rest: Anzahl durch 4, abgerundet." }
+        ] },
+      { id: "s2", title: "Torre Tavira", time: "10:30", where: "Calle Marqués del Real Tesoro 10", map: "Torre Tavira Cádiz",
+        intro: "Von hier oben sieht man die ganze Stadt. Der Turm ist der höchste Punkt der Altstadt.", tip: "Laut Webseite gibt es Besuche nur mit Termin, eine Vorführung der Camera obscura hat Platz für 12 Personen. Vorher auf torretavira.com buchen.", codeN: 1, codeH: 5,
+        tasks: [
+          { id: "a", who: "nh", type: "photo", pts: 2, q: "Fotografiert von oben die Kuppel der Kathedrale." },
+          { id: "b", who: "nh", type: "free", num: true, pts: 2, unit: "Türme", q: "Zählt die Türme auf den Dächern, die ihr von oben seht." },
+          { id: "c", who: "h", type: "num", k: "Schätzen", est: true, ans: 11, tol: 1, pts: 3, unit: "Busse", q: "Der Turm ist 45 m hoch. Ein Doppeldeckerbus ist etwa 4 m hoch. Wie viele Busse müsste man übereinander stapeln?", why: "45 geteilt durch 4 ist ungefähr 11." },
+          { id: "d", who: "n", type: "num", ans: 15, tol: 0, pts: 3, unit: "Stockwerke", q: "Rechnet mit 3 m pro Stockwerk. Wie viele Stockwerke hätte ein 45 m hoher Turm?", why: "45 geteilt durch 3 ergibt 15." },
+          { id: "e", who: "h", type: "quiz", pts: 3, q: "Wozu bauten reiche Kaufleute Türme auf ihre Häuser?", opts: ["Um ihre Schiffe im Hafen kommen zu sehen", "Um Drachen steigen zu lassen", "Um Wäsche zu trocknen"], ok: 0, why: "Von oben sah man die Schiffe aus Amerika schon von weitem." },
+          { id: "f", who: "n", type: "quiz", pts: 3, q: "Wie entsteht das Bild in der Camera obscura?", opts: ["Ein Spiegel lenkt Tageslicht in einen dunklen Raum, das Bild erscheint auf einem Schirm", "Eine Kamera filmt und zeigt es auf einem Fernseher", "Ein Maler zeichnet die Stadt live"], ok: 0, why: "Es ist reines Tageslicht und ein Spiegel. Keine Elektronik nötig." },
+          { id: "g", who: "n", type: "num", ans: 248, tol: 0, pts: 3, unit: "Jahre", q: "Der Turm wurde 1778 zum offiziellen Wachturm des Hafens. Wie viele Jahre sind das bis 2026?", why: "2026 minus 1778 ergibt 248." }
+        ] },
+      { id: "s8", title: "Gadir: die Phönizier", time: "11:00", where: "Auf dem Weg durch die Altstadt, am besten beim Museo de Cádiz", map: "Museo de Cádiz",
+        intro: "Vor etwa 3000 Jahren kamen Händler mit Schiffen aus dem heutigen Libanon und gründeten hier Gadir. Jetzt lernt ihr ihre Schrift und ihre Zahlen kennen.", tip: "Im Museo de Cádiz stehen die zwei phönizischen Sarkophage. Öffnungszeiten vorher prüfen. Die Aufgaben gehen auch ohne Museum.", codeN: 3, codeH: 6,
+        tasks: [
+          { id: "a", who: "nh", type: "photo", pts: 2, q: "Fotografiert irgendwo in der Stadt den Buchstaben A. Dreht das Foto auf den Kopf: Das A war einmal ein Ochsenkopf." },
+          { id: "b", who: "h", type: "quiz", pts: 3, q: "Die Phönizier nannten den ersten Buchstaben „Aleph“ und den zweiten „Beth“. Beth hieß „Haus“, daraus wurde unser B. Was bedeutete Aleph, aus dem unser A wurde?", opts: ["Ochse", "Schiff", "Fisch"], ok: 0, why: "Aleph hieß Ochse. Das A ist ein gedrehter Ochsenkopf mit zwei Hörnern." },
+          { id: "c", who: "h", type: "quiz", pts: 3, q: "Woraus gewannen die Phönizier ihre teure Purpurfarbe?", opts: ["Aus Meeresschnecken", "Aus roten Beeren", "Aus Blumen"], ok: 0, why: "Aus Meeresschnecken. Dafür brauchte man ganz viele." },
+          { id: "d", who: "n", type: "quiz", pts: 3, q: "Für ein einziges Purpurgewand brauchte man Schnecken. Wie viele ungefähr?", opts: ["Zehn", "Hundert", "Tausende"], ok: 2, why: "Es waren tausende. Darum war Purpur so teuer, dass sich nur Reiche und Könige ein Gewand leisten konnten." },
+          { id: "e", who: "n", type: "num", ans: 4, tol: 0, pts: 3, unit: "Buchstaben", q: "Das phönizische Alphabet hatte 22 Zeichen, nur Konsonanten. Unser Alphabet hat 26 Buchstaben. Wie viele mehr sind das?", why: "26 minus 22 ergibt 4." },
+          { id: "f", who: "n", type: "riddle", pts: 3, q: "Was könnte das sein? Im Museum von Cádiz stehen zwei steinerne Särge in Menschenform aus dem 5. Jahrhundert v. Chr. Wofür waren sie da?", opts: ["Für einen Mann und eine Frau, die hier begraben wurden", "Als Badewannen für Könige", "Als Betten für Seeleute"], ok: 0, why: "Es sind Sarkophage, einer für einen Mann und einer für eine Frau. Sie zeigen, dass in Gadir reiche Phönizier lebten." },
+          { id: "h", who: "nh", type: "quiz", pts: 3, q: "Die Fischerboote aus Gadir hatten vorne einen Kopf aus Holz. Von welchem Tier?", opts: ["Pferd", "Hund", "Fisch"], ok: 0, why: "Von einem Pferd. Die Griechen nannten diese Boote „Pferde“ (hippoi)." },
+          { id: "g", who: "nh", type: "free", pts: 2, q: "Die Phönizier schrieben nur Konsonanten, von rechts nach links. Schreibt euren Vornamen so auf, zum Beispiel wird aus „Anna“ NN, und tragt ihn hier ein." }
+        ] },
+      { id: "s3", title: "Shapes Skate Shop", time: "11:30", where: "Shapes Skate Shop, Cádiz", map: "Shapes Skate Shop Cádiz",
+        intro: "Eine Skate-Pause mitten in der Stadt. Sagt freundlich „Hola“ und schaut euch um.", tip: "Adresse und Öffnungszeiten vorher in der Karten-App prüfen.", codeN: 7, codeH: 2,
+        tasks: [
+          { id: "a", who: "nh", type: "photo", pts: 2, q: "Fotografiert das Skateboard mit dem coolsten Motiv." },
+          { id: "b", who: "h", type: "quiz", pts: 3, q: "Wie viele Räder hat ein Skateboard?", opts: ["2", "4", "6"], ok: 1, why: "Vier Räder, zwei an jeder Achse." },
+          { id: "c", who: "h", type: "free", num: true, pts: 2, unit: "Boards", q: "Wie viele Skateboards hängen ungefähr an der Wand?" },
+          { id: "d", who: "n", type: "quiz", k: "Spanisch", pts: 3, q: "„Venta de skate“: Was bedeutet das?", opts: ["Skate-Verkauf", "Skate-Wettbewerb", "Skate-Verbot"], ok: 0, why: "Venta heißt Verkauf. Der Laden verkauft Skate-Material." },
+          { id: "e", who: "n", type: "free", num: true, pts: 2, unit: "€", q: "Was kostet das günstigste Skateboard-Deck im Laden? Schaut auf die Preisschilder." },
+          { id: "f", who: "n", type: "num", from: { id: "e", into: 100 }, tol: 0, pts: 3, unit: "Decks", q: "Wie viele solcher Decks könntet ihr mit 100 € kaufen? Nur ganze Decks zählen.", why: "100 geteilt durch den Preis, abgerundet." }
+        ] },
+      { id: "s4", title: "Skatepark Pablito Real", time: "12:00", where: "Skatepark Pablito Real, Cádiz", map: "Skatepark Pablito Real Cádiz",
+        intro: "Zweiter Park des Tages. Schaut, wie er sich vom ersten unterscheidet.", tip: "Lage vorher in der Karten-App suchen. Vor Ort Zustand und Wetter prüfen, Helm ist Pflicht.", codeN: 9, codeH: 4,
+        tasks: [
+          { id: "a", who: "nh", type: "photo", pts: 2, q: "Fotografiert den Platz, der am schwierigsten aussieht." },
+          { id: "b", who: "nh", type: "challenge", pts: 3, q: "Fahrt eine Runde, ohne den Fuß abzusetzen. Der andere zählt laut." },
+          { id: "c", who: "h", type: "free", num: true, pts: 2, unit: "Pushes", q: "Wie viele Pushes braucht ihr von einem Ende der Bahn zum anderen?" },
+          { id: "d", who: "n", type: "num", ans: 5, tol: 0, pts: 3, unit: "m/s", q: "Ihr rollert 20 m in 4 Sekunden. Wie viele Meter pro Sekunde sind das?", why: "20 geteilt durch 4 ergibt 5." },
+          { id: "e", who: "nh", type: "free", pts: 2, q: "Wie ist dieser Park? Beschreibt ihn mit einem Wort." }
+        ] },
+      { id: "s5", title: "Mittagessen", time: "13:00", where: "Lokal mit Menú del día oder Mercado Central", map: "Mercado Central de Abastos Cádiz",
+        intro: "Ein Mittagsmenü hat meist drei Teile: primero (Vorspeise), segundo (Hauptgericht) und postre (Nachtisch).", codeN: 2, codeH: 6,
+        tasks: [
+          { id: "a", who: "nh", type: "photo", pts: 2, q: "Fotografiert euer Essen." },
+          { id: "b", who: "h", type: "quiz", k: "Spanisch", pts: 3, q: "Wie heißt der Nachtisch auf Spanisch?", opts: ["postre", "primero", "segundo"], ok: 0, why: "Postre ist der Nachtisch." },
+          { id: "c", who: "h", type: "quiz", pts: 3, q: "Ein Pulpo ist ein Krake. Wie viele Arme hat er?", opts: ["6", "8", "10"], ok: 1, why: "Ein Krake hat acht Arme." },
+          { id: "d", who: "n", type: "free", num: true, pts: 2, unit: "€", q: "Was kostet das Menü pro Person? Schaut auf die Tafel." },
+          { id: "e", who: "n", type: "num", from: { id: "d", mul: 4 }, tol: 0.5, pts: 3, unit: "€", q: "Was würde es für vier Personen kosten?", why: "Preis mal 4." },
+          { id: "f", who: "n", type: "quiz", k: "Spanisch", pts: 3, q: "Was ist „pescado“?", opts: ["Fisch", "Fleisch", "Brot"], ok: 0, why: "Pescado ist Fisch." }
+        ] },
+      { id: "s6", title: "Kathedrale", time: "15:00", where: "Catedral de Cádiz mit Turm", map: "Catedral de Cádiz",
+        intro: "Die goldgelbe Kuppel sieht man schon von weitem. Jetzt geht es hinein.", tip: "Öffnungszeiten und Turmbesteigung vorher prüfen. Alternativ: Teatro Romano oder Castillo de San Sebastián.", codeN: 4, codeH: 7,
+        tasks: [
+          { id: "a", who: "nh", type: "photo", pts: 2, q: "Fotografiert die Kuppel von außen." },
+          { id: "b", who: "h", type: "quiz", pts: 3, q: "Die Kathedrale wurde sehr lange gebaut. Wie lange?", opts: ["Ein Jahr", "Zehn Jahre", "Über 100 Jahre"], ok: 2, why: "Von 1722 bis 1838. Das sind 116 Jahre." },
+          { id: "c", who: "n", type: "num", ans: 116, tol: 0, pts: 3, unit: "Jahre", q: "Gebaut wurde von 1722 bis 1838. Wie viele Jahre hat der Bau gedauert?", why: "1838 minus 1722 ergibt 116." },
+          { id: "d", who: "nh", type: "free", num: true, pts: 2, unit: "Stufen", q: "Zählt die Stufen auf dem Weg nach oben, wenn der Turm offen ist. Sonst überspringen." },
+          { id: "e", who: "n", type: "num", from: { id: "d", mul: 0.18 }, tol: 1, pts: 3, unit: "m", q: "Jede Stufe ist etwa 18 cm hoch (0,18 m). Wie hoch seid ihr gestiegen?", why: "Stufen mal 0,18." },
+          { id: "f", who: "h", type: "quiz", pts: 3, q: "Woher kam der berühmte Seefahrer Francis Drake, der 1587 spanische Schiffe im Hafen von Cádiz angriff?", opts: ["Aus England", "Aus Italien", "Aus Marokko"], ok: 0, why: "Drake war Engländer." },
+          { id: "g", who: "n", type: "num", ans: 551, tol: 0, pts: 3, unit: "Jahre", q: "Die Mauren herrschten von 711 bis 1262 in Cádiz. Wie viele Jahre waren das?", why: "1262 minus 711 ergibt 551." }
+        ] },
+      { id: "s7", title: "Ausrollern & Sonnenuntergang", time: "17:30", where: "Promenade Campo del Sur, Atlantikseite", map: "Campo del Sur Cádiz",
+        intro: "Der letzte Teil des Tages. Rollert, bis die Sonne untergeht, das ist etwa um 18:15 Uhr.", codeN: 5, codeH: 8,
+        tasks: [
+          { id: "a", who: "nh", type: "photo", pts: 2, q: "Fotografiert den Sonnenuntergang oder den Himmel." },
+          { id: "b", who: "nh", type: "quiz", pts: 3, q: "In welcher Himmelsrichtung geht die Sonne unter?", opts: ["Osten", "Westen", "Norden"], ok: 1, why: "Im Westen. Über dem Atlantik sieht man das in Cádiz besonders gut." },
+          { id: "c", who: "nh", type: "challenge", pts: 3, q: "Rollert die ganze Promenade entlang, ohne Pause. Wer hält durch?" },
+          { id: "d", who: "n", type: "num", k: "Schätzen", est: true, ans: 3126, tol: 300, pts: 3, unit: "Jahre", q: "Der Überlieferung nach wurde Cádiz etwa 1100 v. Chr. von den Phöniziern gegründet. Wie alt ist die Stadt ungefähr?", why: "1100 plus 2026 ergibt etwa 3100 Jahre. Ausgrabungen zeigen die ältesten Spuren eher im 9. bis 8. Jahrhundert v. Chr., also etwa 2800 bis 2900 Jahre. Beides heißt: ungefähr 3000 Jahre." },
+          { id: "e", who: "h", type: "free", num: true, pts: 2, unit: "Möwen", q: "Zählt die Möwen, die ihr in einer Minute seht." },
+          { id: "f", who: "h", type: "quiz", pts: 3, q: "Wie alt ist die Stadt Cádiz ungefähr?", opts: ["300 Jahre", "3000 Jahre", "30 Jahre"], ok: 1, why: "Etwa 3000 Jahre. Die Phönizier gründeten die Stadt." }
+        ] }
+    ]
+  };
+
+  var TEAM_PTS = 5;
+  var LS = "cadiz-rallye-v1";
+  var S = load();
+  var app = document.getElementById("app");
+
+  function load() {
+    var base = { p: null, tag: null, a: {}, pr: {}, team: {} };
+    try {
+      var r = localStorage.getItem(LS);
+      if (r) { var o = JSON.parse(r); return { p: o.p || null, tag: o.tag || null, a: o.a || {}, pr: o.pr || {}, team: o.team || {} }; }
+    } catch (e) {}
+    return base;
+  }
+  function save() { try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function fmt(n) { return Number(n).toLocaleString("de-DE", { maximumFractionDigits: 2 }); }
+  function parseNum(s) { var t = String(s).trim().replace(",", "."); return /^-?\d+(\.\d+)?$/.test(t) ? parseFloat(t) : NaN; }
+
+  function keyOf(tag, sid, tid, p) { return tag + "." + sid + "." + tid + "." + p; }
+  function parseKey(k) { var a = k.split("."); return { tag: a[0], sid: a[1], tid: a[2], p: a[3] }; }
+  function station(tag, sid) { var L = DATA[tag]; for (var i = 0; i < L.length; i++) if (L[i].id === sid) return L[i]; return null; }
+  function tasksFor(st, p) { return st.tasks.filter(function (t) { return t.who.indexOf(p) >= 0; }); }
+  function taskOf(st, tid) { for (var i = 0; i < st.tasks.length; i++) if (st.tasks[i].id === tid) return st.tasks[i]; return null; }
+
+  function answerOf(t, tag, sid, p) {
+    if (t.from) {
+      var r = S.a[keyOf(tag, sid, t.from.id, p)];
+      if (!r || typeof r.val !== "number") return null;
+      var v = r.val;
+      if (t.from.mul != null) return v * t.from.mul;
+      if (t.from.div) return Math.floor(v / t.from.div);
+      if (t.from.into) return v > 0 ? Math.floor(t.from.into / v) : null;
+    }
+    return t.ans;
+  }
+
+  function stationProgress(tag, st, p) {
+    var ts = tasksFor(st, p), d = 0;
+    ts.forEach(function (t) { if (S.a[keyOf(tag, st.id, t.id, p)]) d++; });
+    return { done: d, total: ts.length, complete: d === ts.length };
+  }
+  function teamKey(tag, sid, p) { return tag + "." + sid + "." + p; }
+  function score(tag, p) {
+    var pts = 0, max = 0;
+    DATA[tag].forEach(function (st) {
+      tasksFor(st, p).forEach(function (t) {
+        max += t.pts;
+        var r = S.a[keyOf(tag, st.id, t.id, p)];
+        if (r) pts += r.pts;
+      });
+      max += TEAM_PTS;
+      if (S.team[teamKey(tag, st.id, p)]) pts += TEAM_PTS;
+    });
+    return { pts: pts, max: max };
+  }
+  function rankOf(sc) { var q = sc.pts / sc.max; return q >= 0.8 ? "Kapitän" : q >= 0.5 ? "Steuermann" : "Matrose"; }
+  function mapUrl(q) { return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q); }
+
+  /* ---------- Views ---------- */
+  function viewStart() {
+    var h = '<header class="hero"><div class="eyebrow">Puerto América · Cádiz</div><h1>Cádiz-Rallye</h1>' +
+      '<p>Eine Stadtrallye mit Fragen, Fotos und Rollern. Beide lösen dieselben Stationen, jeder mit eigenen Aufgaben.</p>' +
+      '<svg class="wave" viewBox="0 0 400 22" preserveAspectRatio="none" aria-hidden="true"><path d="M0 11 Q25 0 50 11 T100 11 T150 11 T200 11 T250 11 T300 11 T350 11 T400 11 V22 H0Z"/></svg></header>';
+    h += '<div class="stack">';
+    h += '<h2 class="section-t">Namen</h2><div class="names">';
+    ["n", "h"].forEach(function (p) {
+      h += '<label class="nm"><span>Name, ' + (p === "n" ? "10 Jahre" : "7 Jahre") + '</span><input class="inp" id="name-' + p + '" type="text" maxlength="20" autocomplete="off" placeholder="' + PL[p].def + '" value="' + esc(NAMES[p]) + '"></label>';
+    });
+    h += '</div><p class="muted">Die Namen sind freiwillig und bleiben auf diesem Handy gespeichert.</p>';
+    h += '<h2 class="section-t">Wer spielt?</h2><div class="choices">';
+    ["n", "h"].forEach(function (p) {
+      h += '<button class="choice" type="button" data-act="setp" data-v="' + p + '" aria-pressed="' + (S.p === p) + '"><b data-name="' + p + '">' + esc(nameOf(p)) + '</b><span>' + PL[p].note + '</span></button>';
+    });
+    h += '</div><h2 class="section-t">Welcher Tag?</h2><div class="choices">';
+    ["halb", "ganz"].forEach(function (g) {
+      h += '<button class="choice" type="button" data-act="settag" data-v="' + g + '" aria-pressed="' + (S.tag === g) + '"><b>' + TAGS[g].name + '</b><span>' + TAGS[g].sub + '</span><span>' + TAGS[g].text + '</span></button>';
+    });
+    h += '</div><button class="btn" type="button" id="go" data-act="go"' + (S.p && S.tag ? "" : " disabled") + '>Los geht’s</button>';
+    h += '<details class="note"><summary>Für Erwachsene: vorab prüfen</summary><ul>' +
+      '<li>Skatepark Santa Bárbara, Skatepark Pablito Real und Shapes Skate Shop: Lage und Öffnungszeiten in der Karten-App prüfen. Jede Station hat einen Kartenlink.</li>' +
+      '<li>Torre Tavira: laut Webseite nur mit Termin, vorher buchen.</li>' +
+      '<li>Castillo de Santa Catalina, Kathedrale und Turm: Öffnungszeiten prüfen.</li>' +
+      '<li>Die Reihenfolge der Stationen ist frei. Tauscht sie nach dem Weg.</li>' +
+      '<li>Fotos entstehen mit der Kamera-App und bleiben auf dem Handy. Der Spielstand wird auf dem jeweiligen Handy gespeichert.</li>' +
+      '<li>Helm und Schoner für Skatepark und Promenade.</li></ul></details>';
+    h += '</div>';
+    app.innerHTML = h;
+  }
+
+  function topBar(tag, p) {
+    var sc = score(tag, p);
+    return '<div class="bar"><a class="back" href="#start" data-act="switch">← Wechseln</a>' +
+      '<div class="who"><b>' + esc(nameOf(p)) + '</b><span class="badge" id="score">' + sc.pts + ' Punkte</span></div></div>';
+  }
+
+  function viewRoute() {
+    var tag = S.tag, p = S.p, sc = score(tag, p), allDone = true;
+    var h = topBar(tag, p) + '<div class="stack">';
+    h += '<section class="sum"><h1>' + TAGS[tag].name + ': ' + TAGS[tag].sub + '</h1><div class="meter" role="img" aria-label="' + sc.pts + ' von ' + sc.max + ' Punkten"><i style="width:' + Math.round(100 * sc.pts / sc.max) + '%"></i></div>' +
+      '<p class="muted">' + sc.pts + ' von ' + sc.max + ' möglichen Punkten. Die Reihenfolge ist frei.</p></section>';
+    h += '<ol class="route">';
+    DATA[tag].forEach(function (st) {
+      var pr = stationProgress(tag, st, p), teamDone = !!S.team[teamKey(tag, st.id, p)];
+      var cls = pr.complete && teamDone ? "is-done" : pr.done > 0 || pr.complete ? "is-part" : "";
+      if (!(pr.complete && teamDone)) allDone = false;
+      h += '<li class="stop ' + cls + '"><a href="#' + tag + "-" + st.id + '"><span class="dot"></span><div class="stop-b"><div class="stop-t">' + esc(st.title) + '</div><div class="stop-m">' + esc(st.time) + " · " + esc(st.where) + '</div></div><div class="stop-p">' + pr.done + "/" + pr.total + (teamDone ? " ✓" : "") + '</div></a></li>';
+    });
+    h += '</ol>';
+    if (allDone) {
+      h += '<section class="rank"><div class="eyebrow">Geschafft</div><h2>Rang: ' + rankOf(sc) + '</h2><p>' + sc.pts + ' von ' + sc.max + ' Punkten. Vergleicht beim Abendessen, wer wie viele hat.</p></section>';
+    }
+    h += '</div>';
+    app.innerHTML = h;
+  }
+
+  function viewStation(sid) {
+    var tag = S.tag, p = S.p, st = station(tag, sid);
+    if (!st) { location.hash = "route"; return; }
+    var h = topBar(tag, p).replace('href="#start" data-act="switch">← Wechseln', 'href="#route">← Route');
+    h += '<div class="stack"><header class="st-head"><div class="eyebrow" style="color:var(--sea)">' + esc(st.time) + '</div><h1>' + esc(st.title) + '</h1>' +
+      '<div class="where"><span>' + esc(st.where) + '</span><a href="' + mapUrl(st.map) + '" target="_blank" rel="noopener">Auf der Karte öffnen</a></div></header>';
+    h += '<p>' + esc(st.intro) + '</p>';
+    if (st.tip) h += '<div class="tip"><b>Tipp für Erwachsene:</b> ' + esc(st.tip) + '</div>';
+    h += '<div class="stack" id="tasks">' + tasksHTML(tag, st, p) + '</div><div id="panel">' + panelHTML(tag, st, p) + '</div></div>';
+    app.innerHTML = h;
+  }
+
+  function tasksHTML(tag, st, p) {
+    return tasksFor(st, p).map(function (t) { return taskHTML(tag, st, t, p); }).join("");
+  }
+
+  function taskHTML(tag, st, t, p) {
+    var key = keyOf(tag, st.id, t.id, p), rec = S.a[key], pr = S.pr[key] || { tries: 0, wrong: [], fb: "" };
+    var kind = t.k || (t.type === "num" && t.est ? "Schätzen" : KIND[t.type]);
+    var cls = rec ? (rec.st === "skip" ? "is-skip" : "is-done") : "";
+    var h = '<article class="task ' + cls + '" data-key="' + key + '"><div class="task-h"><span class="kind">' + esc(kind) + '</span><span class="pts">' +
+      (rec ? (rec.st === "skip" ? "übersprungen" : "+" + rec.pts + " P") : t.pts + " P") + '</span></div><p class="q">' + esc(t.q) + '</p>';
+    var id = "in-" + key.replace(/\./g, "-");
+
+    if (rec) { h += resultHTML(t, rec, tag, st.id, p); }
+    else if (t.type === "quiz" || t.type === "riddle") {
+      h += '<div class="opts">';
+      t.opts.forEach(function (o, i) {
+        var dis = pr.wrong.indexOf(i) >= 0;
+        h += '<button type="button" class="opt" data-act="pick" data-key="' + key + '" data-i="' + i + '"' + (dis ? " disabled" : "") + '>' + esc(o) + '</button>';
+      });
+      h += '</div>';
+    } else if (t.type === "photo" || t.type === "challenge") {
+      h += '<button type="button" class="btn" data-act="confirm" data-key="' + key + '">' + (t.type === "photo" ? "Foto gemacht" : "Geschafft") + '</button>';
+    } else {
+      var ans = t.from ? answerOf(t, tag, st.id, p) : 0;
+      if (t.from && ans === null) {
+        h += '<p class="muted">Löst zuerst die Aufgabe davor. Wurde sie übersprungen, überspringt auch diese.</p>';
+      } else {
+        var numeric = t.type === "num" || t.num;
+        h += '<form class="row" data-form="answer" data-key="' + key + '" novalidate><input class="field" id="' + id + '" name="v" type="text" ' +
+          (numeric ? 'inputmode="decimal" autocomplete="off" placeholder="Zahl"' : 'autocomplete="off" placeholder="Antwort"') + ' aria-label="Antwort">' +
+          (t.unit ? '<span class="unit">' + esc(t.unit) + '</span>' : "") +
+          '<button class="btn" type="submit">' + (t.type === "num" ? "Prüfen" : "Speichern") + '</button></form>';
+      }
+    }
+    if (!rec && pr.fb) h += '<p class="fb bad" role="status">' + esc(pr.fb) + '</p>';
+    if (!rec) h += '<div><button type="button" class="link-btn" data-act="skip" data-key="' + key + '">Überspringen</button></div>';
+    return h + "</article>";
+  }
+
+  function resultHTML(t, rec, tag, sid, p) {
+    if (rec.st === "skip") return '<div class="res skip">Übersprungen, 0 Punkte.</div>';
+    var h = '<div class="res' + (rec.miss ? " miss" : "") + '">';
+    if (t.type === "quiz" || t.type === "riddle") {
+      var right = t.opts[t.ok];
+      h = '<div class="opts">';
+      t.opts.forEach(function (o, i) {
+        var c = i === t.ok ? " ok" : i === rec.sel ? " miss" : "";
+        h += '<div class="opt' + c + '">' + esc(o) + '</div>';
+      });
+      var msg = rec.sel === t.ok ? (rec.pts === t.pts ? "Richtig!" : "Richtig im zweiten Versuch.") : (t.type === "riddle" ? "Guter Tipp! Richtig ist: " + right : "Richtige Antwort: " + right);
+      h += '</div><div class="res' + (rec.sel === t.ok ? "" : " miss") + '"><span>' + esc(msg) + "</span>";
+    } else if (t.type === "num") {
+      var ans = rec.ans != null ? rec.ans : answerOf(t, tag, sid, p);
+      h += "<span>Deine Antwort: <b>" + fmt(rec.val) + "</b> " + esc(t.unit || "") + ". " + (rec.miss || Math.abs(rec.val - ans) > (t.tol || 0) ? "Richtig wäre: <b>" + fmt(ans) + "</b> " + esc(t.unit || "") + "." : "Richtig!") + "</span>";
+    } else if (t.type === "free") {
+      h += "<span>Gespeichert: <b>" + esc(t.num ? fmt(rec.val) : rec.txt) + "</b> " + esc(t.unit || "") + "</span>";
+    } else {
+      h += "<span>Super gemacht!</span>";
+    }
+    if (t.why) h += "<span>" + esc(t.why) + "</span>";
+    return h + "</div>";
+  }
+
+  function panelHTML(tag, st, p) {
+    var pr = stationProgress(tag, st, p), tk = teamKey(tag, st.id, p);
+    if (!pr.complete) {
+      return '<section class="panel idle"><p class="muted">Noch ' + (pr.total - pr.done) + ' Aufgabe' + (pr.total - pr.done === 1 ? "" : "n") + ' offen. Danach bekommst du deine Geheimziffer.</p></section>';
+    }
+    var mine = p === "n" ? st.codeN : st.codeH;
+    var h = '<section class="panel"><h2>Geheimziffer</h2><div class="digits-row"><div class="digit" aria-label="Ziffer von ' + esc(nameOf(p)) + '">' + mine + '</div>' +
+      '<p>Das ist die Ziffer von <b>' + esc(nameOf(p)) + '</b>. Der Teamcode ist die Ziffer von <b>' + esc(nameOf("n")) + '</b> und dann die von <b>' + esc(nameOf("h")) + '</b>. Fragt euch gegenseitig!</p></div>';
+    if (S.team[tk]) {
+      h += '<div class="res"><span>Teamcode geknackt, +' + TEAM_PTS + ' Teampunkte.</span></div>';
+    } else {
+      h += '<form class="row" data-form="team" data-key="' + tk + '" novalidate><input class="field code-in" id="team-' + tk.replace(/\./g, "-") + '" name="c" type="text" inputmode="numeric" maxlength="2" autocomplete="off" placeholder="00" aria-label="Teamcode, zwei Ziffern">' +
+        '<button class="btn" type="submit">Teamcode prüfen</button></form><p class="fb bad" id="team-fb" role="status"></p>';
+    }
+    h += '<a class="btn ghost" href="#route">Zurück zur Route</a></section>';
+    return h;
+  }
+
+  /* ---------- Aktionen ---------- */
+  function ctx(key) {
+    var k = parseKey(key), st = station(k.tag, k.sid);
+    return { k: k, st: st, t: taskOf(st, k.tid) };
+  }
+  function refreshAll() {
+    var el = document.getElementById("tasks"); if (!el) return;
+    var c = currentStation();
+    el.innerHTML = tasksHTML(S.tag, c, S.p);
+    document.getElementById("panel").innerHTML = panelHTML(S.tag, c, S.p);
+    updateScore();
+  }
+  function refreshTask(key) {
+    var el = app.querySelector('[data-key="' + key + '"].task'); if (!el) return;
+    var c = ctx(key), tmp = document.createElement("div");
+    tmp.innerHTML = taskHTML(c.k.tag, c.st, c.t, c.k.p);
+    el.replaceWith(tmp.firstChild);
+  }
+  function currentStation() { var m = location.hash.match(/^#(halb|ganz)-(s\d)$/); return m ? station(m[1], m[2]) : null; }
+  function updateScore() { var el = document.getElementById("score"); if (el) el.textContent = score(S.tag, S.p).pts + " Punkte"; }
+
+  function finish(key, pts, extra) {
+    var rec = { st: "done", pts: pts };
+    for (var k in extra) rec[k] = extra[k];
+    S.a[key] = rec; delete S.pr[key]; save(); refreshAll();
+  }
+  function wrong(key, fb) {
+    var pr = S.pr[key] || (S.pr[key] = { tries: 0, wrong: [], fb: "" });
+    pr.fb = fb; save(); refreshTask(key);
+  }
+
+  function pick(key, i) {
+    var c = ctx(key), t = c.t, pr = S.pr[key] || (S.pr[key] = { tries: 0, wrong: [], fb: "" });
+    if (t.type === "riddle") { finish(key, i === t.ok ? t.pts : 1, { sel: i }); return; }
+    if (i === t.ok) { finish(key, pr.tries === 0 ? t.pts : Math.max(1, t.pts - 1), { sel: i }); return; }
+    pr.tries++; pr.wrong.push(i);
+    if (pr.tries >= 2) { finish(key, 0, { sel: i, miss: true }); return; }
+    wrong(key, "Nicht ganz. Du hast noch einen Versuch.");
+  }
+
+  function answer(key, raw) {
+    var c = ctx(key), t = c.t, tag = c.k.tag, p = c.k.p, pr = S.pr[key] || (S.pr[key] = { tries: 0, wrong: [], fb: "" });
+    if (t.type === "free" && !t.num) {
+      if (!raw.trim()) { wrong(key, "Bitte etwas eintragen."); return; }
+      finish(key, t.pts, { txt: raw.trim().slice(0, 80) }); return;
+    }
+    var n = parseNum(raw);
+    if (isNaN(n) || n < 0) { wrong(key, "Bitte eine Zahl eingeben, zum Beispiel 12 oder 7,5."); return; }
+    if (t.type === "free") { finish(key, t.pts, { val: n }); return; }
+    var ans = answerOf(t, tag, c.k.sid, p), diff = Math.abs(n - ans), tol = (t.tol || 0) + 1e-9;
+    if (t.est) {
+      var pts = diff <= tol ? t.pts : diff <= (t.tol || 0) * 3 ? Math.ceil(t.pts / 2) : 1;
+      finish(key, pts, { val: n, ans: ans }); return;
+    }
+    if (diff <= tol) { finish(key, pr.tries === 0 ? t.pts : Math.max(1, t.pts - 1), { val: n, ans: ans }); return; }
+    pr.tries++;
+    if (pr.tries >= 2) { finish(key, 0, { val: n, ans: ans, miss: true }); return; }
+    wrong(key, n > ans ? "Zu hoch. Du hast noch einen Versuch." : "Zu niedrig. Du hast noch einen Versuch.");
+  }
+
+  app.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-act]"); if (!b) return;
+    var a = b.getAttribute("data-act");
+    if (a === "setp") { S.p = b.getAttribute("data-v"); save(); viewStart(); }
+    else if (a === "settag") { S.tag = b.getAttribute("data-v"); save(); viewStart(); }
+    else if (a === "go") { location.hash = "route"; }
+    else if (a === "pick") { pick(b.getAttribute("data-key"), parseInt(b.getAttribute("data-i"), 10)); }
+    else if (a === "confirm") { var k = b.getAttribute("data-key"); finish(k, ctx(k).t.pts, { ok: true }); }
+    else if (a === "skip") { var k2 = b.getAttribute("data-key"); S.a[k2] = { st: "skip", pts: 0 }; delete S.pr[k2]; save(); refreshAll(); }
+  });
+  app.addEventListener("input", function (e) {
+    var t = e.target;
+    if (t.id !== "name-n" && t.id !== "name-h") return;
+    var p = t.id.slice(5);
+    NAMES[p] = t.value.slice(0, 20); saveNames();
+    Array.prototype.forEach.call(app.querySelectorAll('[data-name="' + p + '"]'), function (el) { el.textContent = nameOf(p); });
+  });
+  app.addEventListener("submit", function (e) {
+    var f = e.target.closest("form[data-form]"); if (!f) return;
+    e.preventDefault();
+    var kind = f.getAttribute("data-form"), key = f.getAttribute("data-key"), v = f.elements[0].value;
+    if (kind === "answer") { answer(key, v); return; }
+    var parts = key.split("."), st = station(parts[0], parts[1]), want = "" + st.codeN + st.codeH;
+    if (v.trim() === want) { S.team[key] = true; save(); refreshAll(); }
+    else { var fb = document.getElementById("team-fb"); if (fb) fb.textContent = "Das stimmt noch nicht. Vergleicht die Ziffern: erst " + nameOf("n") + ", dann " + nameOf("h") + "."; }
+  });
+
+  function route() {
+    var h = location.hash.replace(/^#/, "");
+    if (!h) h = S.p && S.tag ? "route" : "start";
+    if (h === "start" || !S.p || !S.tag) { viewStart(); return; }
+    var m = h.match(/^(halb|ganz)-(s\d)$/);
+    if (m && m[1] === S.tag) { viewStation(m[2]); window.scrollTo(0, 0); return; }
+    viewRoute(); window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", route);
+  route();
+})();
+</script>
+
+</body>
+</html>
