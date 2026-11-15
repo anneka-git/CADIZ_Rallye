@@ -11,6 +11,7 @@ Die Namen der beiden Kinder trägt man auf der Startseite ein. Sie werden nur au
 
 - `index.html`: die Rallye. Jedes Kind öffnet sie auf dem eigenen Handy, wählt den Namen und den Tag.
 - `zeitreise.html`: Überblick über Phönizier, Karthager, Römer, Westgoten, Mauren und Spanier, je in einer Version für beide Stufen.
+- `Voelker_in_Cadiz_A4.pdf`: Info- und Malblätter zu den Völkern in Cádiz (Phönizier, Karthager, Griechen, Römer, Westgoten, Wikinger, Mauren, Normannen, Hanseaten, Spanier) zum Ausdrucken, je Volk eine Seite mit Schiff und eine mit Figur.
 
 Beides sind einzelne HTML-Dateien ohne Server. Der Spielstand liegt im Browser des jeweiligen Handys. Die Schriften kommen von Google Fonts, ohne Netz greift eine Standardschrift. Auf GitHub Pages teilen sich beide Seiten die eingetragenen Namen.
 
